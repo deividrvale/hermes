@@ -1,4 +1,4 @@
 (executable
  (public_name hermes)
  (name main)
- (libraries hermes))
+ (libraries hermes ))

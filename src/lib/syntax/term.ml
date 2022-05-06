@@ -1,3 +1,5 @@
+open Seq
+
 module type SYMBOL = sig
   type t
   val equal : t -> t -> bool

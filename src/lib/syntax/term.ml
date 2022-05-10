@@ -85,7 +85,7 @@ let sort_to_string = Sort.to_string
 type typ = sort list * sort
 
 let typ_mk lst str =
-  let symbolize = () |> Fun.const |> Sort.symbolize in
+  let symbolize = Sort.symbolize @@ Fun.const () in
   (List.map symbolize lst, symbolize str)
 
 let typ_ins = fst

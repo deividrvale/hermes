@@ -1,15 +1,15 @@
 module type SYMBOL = sig
   type t
   val equal : t -> t -> bool
-  val syseq : unit -> t Seq.t
-  val of_string_opt : string -> t option
-  val symbolize : (t -> unit) -> string -> t
-  val to_string : t -> string
+  val syseq : unit -> t Seq.t                           (* syseq returns a sequence of all known symbols *)
+  val of_string_opt : string -> t option                (* of_string_opt looks up the given name and fails when no known symbol has the name *)
+  val symbolize : (t -> unit) -> string -> t            (* symbolize registers the given name (if not registered already) and returns the corresponding symbol *)
+  val to_string : t -> string                           (* to_string returns the name of the given symbol *)
 end
 
 module type SYMINTREC = sig
-  val count : int ref
-  val token : string list ref (* in reverse order *)
+  val count : int ref                                   (* !count equals the length of !token *)
+  val token : string list ref                           (* token stores symbol names in reverse order *)
 end
 
 module SymInt (R : SYMINTREC) : SYMBOL = struct
@@ -19,9 +19,9 @@ module SymInt (R : SYMINTREC) : SYMBOL = struct
 
   let equal = Int.equal
 
-  let syseq _ = Seq.init !count Fun.id
+  let syseq _ = Seq.init !count Fun.id                  (* 0; 1; ...; !count - 1 *)
 
-  let rec mem_idx str lst idx =
+  let rec mem_idx str lst idx =                         (* mem_idx str lst 0 is the index of the first element that equals str in lst *)
     match lst with
       [] ->
       idx
@@ -30,29 +30,31 @@ module SymInt (R : SYMINTREC) : SYMBOL = struct
       then idx
       else mem_idx str tl (idx + 1)
 
-  let of_string_opt str =
-    let idx = mem_idx str !token 0 in
+  let of_string_opt name =
+    let idx = mem_idx name !token 0 in
     if idx >= !count
     then None
     else Some (!count - 1 - idx)
 
-  let symbolize xst str =     (* xst may raise exceptions *)
-    match of_string_opt str with
+  let symbolize known name =                            (* known may raise exceptions *)
+    match of_string_opt name with
       None ->
       let n = !count in
       begin
         count := n + 1;
-        token := str::!token;
+        token := name::!token;
         n
       end
     | Some sym ->
       begin
-        xst sym;
+        known sym;                                      (* known provides a means of changing the control flow when the given name is already known *)
         sym
       end
 
   let to_string sym = List.nth !token (!count - 1 - sym)
 end
+
+(* hidden state variables below *)
 
 module Sort = SymInt(
   struct
@@ -82,11 +84,11 @@ let sort_syseq = Sort.syseq
 
 let sort_to_string = Sort.to_string
 
-type typ = sort list * sort
+type typ = sort list * sort                             (* flattened *)
 
-let typ_mk lst str =
+let typ_mk ins out =
   let symbolize = Sort.symbolize @@ Fun.const () in
-  (List.map symbolize lst, symbolize str)
+  (List.map symbolize ins, symbolize out)               (* sorts are not checked and registered on the fly *)
 
 let typ_ins = fst
 
@@ -120,37 +122,45 @@ let var_symbolize = Var.symbolize
 
 let var_to_string = Var.to_string
 
-type sym = F of func | V of var
+type sym = F of func | V of var                         (* function symbols and variables *)
 
-let sym_mk_opt str =
-  match func_of_string_opt str with
-    None -> Option.map (fun v -> V v) (var_of_string_opt str)
-  | Some f -> Some (F f)
+let sym_mk_opt name =
+  match func_of_string_opt name with                    (* first check if name corresponds to any known function symbol *)
+    None ->
+    Option.map (fun v -> V v) (var_of_string_opt name)
+  | Some f ->
+    Some (F f)
 
 type ('a, 'b) term_tree =
     Sym of 'a
   | App of (('a, 'b) term_tree * 'b) * (('a, 'b) term_tree * 'b)
 
-type term = (sym, typ) term_tree * typ
+type term = (sym, typ) term_tree * typ                  (* a term is a pair consisting of its tree structure and its type *)
 
-let rec term_mk_opt env ttr =
-  match ttr with
-    Sym str ->
-    Option.bind (sym_mk_opt str)
-      (fun sy -> Option.map (fun ty -> (Sym sy, ty)) (env sy))
-  | App (op, ar) ->
-    Option.bind (term_mk_opt env (fst ar))
-      (fun ((_, aty) as atr) ->
-         match typ_ins aty with
-           [] ->
-           Option.bind (term_mk_opt env (fst op))
-             (fun ((_, oty) as otr) ->
-                match typ_ins oty with
+let rec term_mk_opt env name_tree =
+  match name_tree with
+    Sym name ->
+    Option.bind
+      (sym_mk_opt name)
+      (fun sy ->
+         Option.map
+           (fun ty -> (Sym sy, ty))
+           (env sy))
+  | App ((tr1, _), (tr2, _)) ->
+    Option.bind
+      (term_mk_opt env tr2)
+      (fun ((_, ty2) as t2) ->
+         match typ_ins ty2 with
+           [] ->                                        (* arguments are supposed to be first-order *)
+           Option.bind
+             (term_mk_opt env tr1)
+             (fun ((_, ty1) as t1) ->
+                match typ_ins ty1 with
                   [] ->
                   None
                 | hd::tl ->
-                  if sort_equal (typ_out aty) hd
-                  then Some (App (otr, atr), (tl, typ_out oty))
+                  if sort_equal (typ_out ty2) hd        (* type checking *)
+                  then Some (App (t1, t2), (tl, typ_out ty1))
                   else None)
          | _ ->
            None)

@@ -1,3 +1,0 @@
-#!/bin/sh
-
-eval $(opam env --switch=/home/deivid/.opam/ocaml-4.14.0 --set-switch)

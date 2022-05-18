@@ -1,13 +1,18 @@
+(** Ocaml type for sort names. *)
 type sort
 
+(** [teste] does something *)
 val sort_equal : sort -> sort -> bool
 
+
 val sort_syseq : unit -> sort Seq.t
+
 
 val sort_to_string : sort -> string
 
 type typ
 
+(** typ_mk *)
 val typ_mk : string list -> string -> typ
 
 val typ_ins : typ -> sort list
@@ -28,8 +33,10 @@ val func_symbolize : (func -> unit) -> string -> func
 
 val func_to_string : func -> string
 
+(** Ocaml type for variable names. *)
 type var
 
+(** var_equal tests if two variables are equal *)
 val var_equal : var -> var -> bool
 
 val var_syseq : unit -> var Seq.t
@@ -50,4 +57,4 @@ type ('a, 'b) term_tree =
 
 type term = (sym, typ) term_tree * typ
 
-val term_mk_opt : (sym -> typ option) -> (string, 'a) term_tree -> term option
+val term_mk_opt : (sym -> typ option) -> (string, 'b) term_tree -> term option

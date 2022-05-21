@@ -7,12 +7,12 @@ module type SYMBOL = sig
   val to_string : t -> string                           (* to_string returns the name of the given symbol *)
 end
 
-module type SYMINTREC = sig
+module type REFSYMINT = sig
   val count : int ref                                   (* !count equals the length of !token *)
   val token : string list ref                           (* token stores symbol names in reverse order *)
 end
 
-module SymInt (R : SYMINTREC) : SYMBOL = struct
+module SymInt (R : REFSYMINT) : SYMBOL = struct
   open R
 
   type t = int

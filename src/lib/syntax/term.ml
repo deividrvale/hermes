@@ -122,6 +122,34 @@ let var_symbolize = Var.symbolize
 
 let var_to_string = Var.to_string
 
+module type DECL = functor (S : SYMBOL) -> sig
+  val set_typ : S.t -> typ -> unit
+  val get_typ : S.t -> typ
+end
+
+module Decl : DECL = functor (S : SYMBOL) -> struct
+  let decl = ref []
+
+  let set_typ sym t = decl := (sym, t)::!decl
+
+  let get_typ sym =
+    !decl
+    |> List.find (fun (s, _) -> S.equal s sym)
+    |> snd
+end
+
+module FuncDecl = Decl(Func)
+
+let func_set_typ = FuncDecl.set_typ
+
+let func_get_typ = FuncDecl.get_typ
+
+module VarDecl = Decl(Var)
+
+let var_set_typ = VarDecl.set_typ
+
+let var_get_typ = VarDecl.get_typ
+
 type sym = F of func | V of var                         (* function symbols and variables *)
 
 let sym_mk_opt name =
@@ -137,23 +165,23 @@ type ('a, 'b) term_tree =
 
 type term = (sym, typ) term_tree * typ                  (* a term is a pair consisting of its tree structure and its type *)
 
-let rec term_mk_opt env name_tree =
-  match name_tree with
+let rec term_mk_opt = function
     Sym name ->
     Option.bind
       (sym_mk_opt name)
       (fun sy ->
-         Option.map
-           (fun ty -> (Sym sy, ty))
-           (env sy))
+         let ty = match sy with
+             F f -> func_get_typ f
+           | V v -> var_get_typ v in
+         Some (Sym sy, ty))
   | App ((tr1, _), (tr2, _)) ->
     Option.bind
-      (term_mk_opt env tr2)
+      (term_mk_opt tr2)
       (fun ((_, ty2) as t2) ->
          match typ_ins ty2 with
            [] ->                                        (* arguments are supposed to be first-order *)
            Option.bind
-             (term_mk_opt env tr1)
+             (term_mk_opt tr1)
              (fun ((_, ty1) as t1) ->
                 match typ_ins ty1 with
                   [] ->

@@ -54,8 +54,6 @@ module SymInt (R : REFSYMINT) : SYMBOL = struct
   let to_string sym = List.nth !token (!count - 1 - sym)
 end
 
-(* hidden state variables below *)
-
 module Sort = SymInt(
   struct
     let count = ref 0
@@ -73,8 +71,6 @@ module Var = SymInt(
     let count = ref 0
     let token = ref []
   end)
-
-(* export below *)
 
 type sort = Sort.t
 
@@ -122,33 +118,25 @@ let var_symbolize = Var.symbolize
 
 let var_to_string = Var.to_string
 
-module type DECL = functor (S : SYMBOL) -> sig
-  val set_typ : S.t -> typ -> unit
-  val get_typ : S.t -> typ
-end
+let decl_set (decl : ('a * 'b) list ref) sym t =
+  decl := (sym, t)::!decl
 
-module Decl : DECL = functor (S : SYMBOL) -> struct
-  let decl = ref []
+let decl_get (decl : ('a * 'b) list ref) equal sym =
+  !decl
+  |> List.find (fun (s, _) -> equal s sym)
+  |> snd
 
-  let set_typ sym t = decl := (sym, t)::!decl
+let func_decl : (func * typ) list ref = ref []
 
-  let get_typ sym =
-    !decl
-    |> List.find (fun (s, _) -> S.equal s sym)
-    |> snd
-end
+let func_set_typ = decl_set func_decl
 
-module FuncDecl = Decl(Func)
+let func_get_typ = decl_get func_decl func_equal
 
-let func_set_typ = FuncDecl.set_typ
+let var_decl : (var * sort) list ref = ref []
 
-let func_get_typ = FuncDecl.get_typ
+let var_set_sort = decl_set var_decl
 
-module VarDecl = Decl(Var)
-
-let var_set_typ = VarDecl.set_typ
-
-let var_get_typ = VarDecl.get_typ
+let var_get_sort = decl_get var_decl var_equal
 
 type sym = F of func | V of var                         (* function symbols and variables *)
 
@@ -172,7 +160,7 @@ let rec term_mk_opt = function
       (fun sy ->
          let ty = match sy with
              F f -> func_get_typ f
-           | V v -> var_get_typ v in
+           | V v -> ([], var_get_sort v) in
          Some (Sym sy, ty))
   | App ((tr1, _), (tr2, _)) ->
     Option.bind

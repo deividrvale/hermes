@@ -47,9 +47,9 @@ val func_set_typ : func -> typ -> unit
 
 val func_get_typ : func -> typ
 
-val var_set_typ : var -> typ -> unit
+val var_set_sort : var -> sort -> unit
 
-val var_get_typ : var -> typ
+val var_get_sort : var -> sort
 
 type sym = F of func | V of var
 

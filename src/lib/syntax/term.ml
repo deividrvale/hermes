@@ -140,30 +140,23 @@ type ('a, 'b) term_tree =
 
 type term = (sym, typ) term_tree * typ                  (* a term is a pair consisting of its tree structure and its type *)
 
-let rec term_mk_opt = function
+let rec term_mk_opt =
+  let open Monad.Option in
+  function
     Sym name ->
-    Option.bind
-      (sym_mk_opt name)
-      (fun sy ->
-         let ty = match sy with
-             F f -> func_get_typ f
-           | V v -> ([], var_get_sort v) in
-         Some (Sym sy, ty))
+    let* sy = sym_mk_opt name in
+    let ty = match sy with
+        F f -> func_get_typ f
+      | V v -> [], var_get_sort v in
+    return (Sym sy, ty)
   | App ((tr1, _), (tr2, _)) ->
-    Option.bind
-      (term_mk_opt tr2)
-      (fun ((_, ty2) as t2) ->
-         match typ_ins ty2 with
-           [] ->                                        (* arguments are supposed to be first-order *)
-           Option.bind
-             (term_mk_opt tr1)
-             (fun ((_, ty1) as t1) ->
-                match typ_ins ty1 with
-                  [] ->
-                  None
-                | hd::tl ->
-                  if sort_equal (typ_out ty2) hd        (* type checking *)
-                  then Some (App (t1, t2), (tl, typ_out ty1))
-                  else None)
-         | _ ->
-           None)
+    let* (_, ty1) as t1 = term_mk_opt tr1 in
+    let* (_, ty2) as t2 = term_mk_opt tr2 in
+    match typ_ins ty1, typ_ins ty2 with
+      hd::tl, [] ->                                     (* arguments are supposed to be first-order *)
+      if sort_equal hd (typ_out ty2) then
+        return (App (t1, t2), (tl, typ_out ty1))
+      else
+        None
+    | _ ->
+      None

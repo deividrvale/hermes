@@ -7,13 +7,10 @@ module type SYMBOL = sig
   val to_string : t -> string                           (* to_string returns the name of the given symbol *)
 end
 
-module type REFSYMINT = sig
-  val count : int ref                                   (* !count equals the length of !token *)
-  val token : string list ref                           (* token stores symbol names in reverse order *)
-end
+module SymInt () : SYMBOL = struct
+  let count = ref 0                                     (* !count equals the length of !token *)
 
-module SymInt (R : REFSYMINT) : SYMBOL = struct
-  open R
+  let token = ref []                                    (* token stores symbol names in reverse order *)
 
   type t = int
 
@@ -26,15 +23,17 @@ module SymInt (R : REFSYMINT) : SYMBOL = struct
       [] ->
       idx
     | hd::tl ->
-      if String.equal str hd
-      then idx
-      else mem_idx str tl (idx + 1)
+      if String.equal str hd then
+        idx
+      else
+        mem_idx str tl (idx + 1)
 
   let of_string_opt name =
     let idx = mem_idx name !token 0 in
-    if idx >= !count
-    then None
-    else Some (!count - 1 - idx)
+    if idx >= !count then
+      None
+    else
+      Some (!count - 1 - idx)
 
   let symbolize known name =                            (* known may raise exceptions *)
     match of_string_opt name with
@@ -54,23 +53,7 @@ module SymInt (R : REFSYMINT) : SYMBOL = struct
   let to_string sym = List.nth !token (!count - 1 - sym)
 end
 
-module Sort = SymInt(
-  struct
-    let count = ref 0
-    let token = ref []
-  end)
-
-module Func = SymInt(
-  struct
-    let count = ref 0
-    let token = ref []
-  end)
-
-module Var = SymInt(
-  struct
-    let count = ref 0
-    let token = ref []
-  end)
+module Sort = SymInt()
 
 type sort = Sort.t
 
@@ -84,7 +67,7 @@ type typ = sort list * sort                             (* flattened *)
 
 let typ_mk ins out =
   let symbolize = Sort.symbolize @@ Fun.const () in
-  (List.map symbolize ins, symbolize out)               (* sorts are not checked and registered on the fly *)
+  List.map symbolize ins, symbolize out                 (* sorts are not checked and registered on the fly *)
 
 let typ_ins = fst
 
@@ -93,6 +76,8 @@ let typ_out = snd
 let typ_equal t1 t2 =
   List.equal sort_equal (typ_ins t1) (typ_ins t2) &&
   sort_equal (typ_out t1) (typ_out t2)
+
+module Func = SymInt()
 
 type func = Func.t
 
@@ -105,6 +90,8 @@ let func_of_string_opt = Func.of_string_opt
 let func_symbolize = Func.symbolize
 
 let func_to_string = Func.to_string
+
+module Var = SymInt()
 
 type var = Var.t
 

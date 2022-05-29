@@ -29,3 +29,25 @@ module State (S : sig type t end) : MONAD with type 'a t = S.t -> 'a * S.t = str
 
   let return a s = a, s
 end
+
+module Utility (M : MONAD) = struct
+  open M
+
+  let rev_mapM f =
+    let rec rev_mapM_aux accum = function
+        [] ->
+        return accum
+      | hd::tl ->
+        let* b = f hd in
+        rev_mapM_aux (b::accum) tl in
+    rev_mapM_aux []
+
+  let rev_replicateM m =
+    let rec rev_replicateM_aux accum count =
+      if count <= 0 then
+        return accum
+      else
+        let* m in
+        rev_replicateM_aux (m::accum) (count - 1) in
+    rev_replicateM_aux []
+end

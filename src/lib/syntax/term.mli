@@ -3,7 +3,7 @@ type sort
 
 val sort_equal : sort -> sort -> bool
 
-val sort_syseq : unit -> sort Seq.t
+val sort_sylst : unit -> sort list
 
 val sort_to_string : sort -> string
 
@@ -21,7 +21,7 @@ type func
 
 val func_equal : func -> func -> bool
 
-val func_syseq : unit -> func Seq.t
+val func_sylst : unit -> func list
 
 val func_of_string_opt : string -> func option
 
@@ -35,7 +35,7 @@ type var
 (** var_equal tests if two variables are equal *)
 val var_equal : var -> var -> bool
 
-val var_syseq : unit -> var Seq.t
+val var_sylst : unit -> var list
 
 val var_of_string_opt : string -> var option
 

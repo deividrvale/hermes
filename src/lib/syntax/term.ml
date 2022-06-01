@@ -1,7 +1,7 @@
 module type SYMBOL = sig
   type t
   val equal : t -> t -> bool
-  val syseq : unit -> t Seq.t                           (* syseq returns a sequence of all known symbols *)
+  val sylst : unit -> t list                            (* sylst returns a list of all known symbols *)
   val of_string_opt : string -> t option                (* of_string_opt looks up the given name and fails when no known symbol has the name *)
   val symbolize : (t -> unit) -> string -> t            (* symbolize registers the given name (if not registered already) and returns the corresponding symbol *)
   val to_string : t -> string                           (* to_string returns the name of the given symbol *)
@@ -16,7 +16,7 @@ module SymInt () : SYMBOL = struct
 
   let equal = Int.equal
 
-  let syseq _ = Seq.init !count Fun.id                  (* 0; 1; ...; !count - 1 *)
+  let sylst _ = List.init !count Fun.id                 (* 0; 1; ...; !count - 1 *)
 
   let rec mem_idx str lst idx =                         (* mem_idx str lst 0 is the index of the first element that equals str in lst *)
     match lst with
@@ -59,7 +59,7 @@ type sort = Sort.t
 
 let sort_equal = Sort.equal
 
-let sort_syseq = Sort.syseq
+let sort_sylst = Sort.sylst
 
 let sort_to_string = Sort.to_string
 
@@ -83,7 +83,7 @@ type func = Func.t
 
 let func_equal = Func.equal
 
-let func_syseq = Func.syseq
+let func_sylst = Func.sylst
 
 let func_of_string_opt = Func.of_string_opt
 
@@ -97,7 +97,7 @@ type var = Var.t
 
 let var_equal = Var.equal
 
-let var_syseq = Var.syseq
+let var_sylst = Var.sylst
 
 let var_of_string_opt = Var.of_string_opt
 

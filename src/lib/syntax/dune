@@ -1,3 +1,3 @@
 (library
  (name syntax)
- (libraries seq))
+ (libraries seq monad))

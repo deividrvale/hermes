@@ -62,3 +62,10 @@ type ('a, 'b) term_tree =
 type term = (sym, typ) term_tree * typ
 
 val term_mk_opt : (string, 'b) term_tree -> term option
+
+(**
+    [term_get_vars tm]
+    returns the list containing all
+    variables occurring in [tm].
+*)
+val term_get_vars : term -> var list

@@ -160,3 +160,13 @@ let rec term_mk_opt =
         None
     | _ ->
       None
+
+let rec term_get_vars (tm : term) : var list =
+  match tm with
+  | (term, _) ->
+    match term with
+    | Sym s ->
+      (match s with
+      | F _ -> []
+      | V x -> [x])
+  | App (s, t) -> (term_get_vars s) @ (term_get_vars t)

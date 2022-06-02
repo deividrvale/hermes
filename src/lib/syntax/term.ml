@@ -161,12 +161,12 @@ let rec term_mk_opt =
     | _ ->
       None
 
-let rec term_get_vars (tm : term) : var list =
-  match tm with
-  | (term, _) ->
-    match term with
-    | Sym s ->
-      (match s with
-      | F _ -> []
-      | V x -> [x])
-  | App (s, t) -> (term_get_vars s) @ (term_get_vars t)
+let rec term_get_vars = function
+    Sym (F _), _ ->
+    []
+  | Sym (V v), _ ->
+    v::[]
+  | App (t1, t2), _ ->
+    List.rev_append
+      (term_get_vars t1)
+      (term_get_vars t2)

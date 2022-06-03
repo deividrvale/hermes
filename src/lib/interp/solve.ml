@@ -47,8 +47,8 @@ module IntVec = struct
   open Z3Env
   open Z3Reader
   open Monad.Utility(Z3Reader)
-  open Term
-  open Tuple.IntVec
+  open Syntax.Term
+  open Syntax.Tuple.IntVec
 
   let ind_tup v d =
     let proj i = (Coef.one, Atom.ind v i::[])::[] in

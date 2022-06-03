@@ -17,6 +17,9 @@ val typ_out : typ -> sort
 
 val typ_equal : typ -> typ -> bool
 
+(** [type_is_sort typ] is whether [typ] is a sort. *)
+val typ_is_sort : typ -> bool
+
 type func
 
 val func_equal : func -> func -> bool
@@ -32,7 +35,10 @@ val func_to_string : func -> string
 (** OCaml type for variables *)
 type var
 
-(** var_equal tests if two variables are equal *)
+(**
+    [var_equal x y] is wheater [x] and [y]
+    are structurally equal.
+*)
 val var_equal : var -> var -> bool
 
 val var_sylst : unit -> var list
@@ -65,7 +71,12 @@ val term_mk_opt : (string, 'b) term_tree -> term option
 
 (**
     [term_get_vars tm]
-    returns the list containing all
+    is the list containing all
     variables occurring in [tm].
 *)
 val term_get_vars : term -> var list
+
+(**
+    [term_get_typ tm] is the type of [tm].
+*)
+val term_get_typ : term -> typ

@@ -77,6 +77,12 @@ let typ_equal t1 t2 =
   List.equal sort_equal (typ_ins t1) (typ_ins t2) &&
   sort_equal (typ_out t1) (typ_out t2)
 
+
+let typ_is_sort (ty : typ) =
+  match (typ_ins ty) with
+  | [] -> true
+  | _ -> false
+
 module Func = SymInt()
 
 type func = Func.t
@@ -170,3 +176,5 @@ let rec term_get_vars = function
     List.rev_append
       (term_get_vars t1)
       (term_get_vars t2)
+
+let term_get_typ = snd

@@ -1,6 +1,10 @@
 open Syntax.Term
 
-let x = Syntax.Term.typ_mk ["nat"; "sort"] "asd"
+let arr = Syntax.Term.typ_mk ["nat"; "sort"] "asd";;
+
+func_symbolize
+
+
 
 let example = "[nat] ==> nat ";;
 

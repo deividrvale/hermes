@@ -1,4 +1,7 @@
 (executable
- (public_name hermes)
  (name main)
  (libraries hermes ))
+
+(install
+ (section bin)
+ (files (main.exe as main)))

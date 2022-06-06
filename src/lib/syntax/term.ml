@@ -1,12 +1,20 @@
+(*--------------------------------------------------------------------
+  Abstract symbols
+--------------------------------------------------------------------*)
 module type SYMBOL = sig
   type t
   val equal : t -> t -> bool
-  val sylst : unit -> t list                            (* sylst returns a list of all known symbols *)
-  val of_string_opt : string -> t option                (* of_string_opt looks up the given name and fails when no known symbol has the name *)
-  val symbolize : (t -> unit) -> string -> t            (* symbolize registers the given name (if not registered already) and returns the corresponding symbol *)
-  val to_string : t -> string                           (* to_string returns the name of the given symbol *)
+  val sylst : unit -> t list
+  (* sylst returns a list of all known symbols *)
+  val of_string_opt : string -> t option
+  (* of_string_opt looks up the given name and fails when no known symbol has the name *)
+  val symbolize : (t -> unit) -> string -> t
+  (* symbolize registers the given name (if not registered already) and returns the corresponding symbol *)
+  val to_string : t -> string
+  (* to_string returns the name of the given symbol *)
 end
 
+(* SymInt is a SYMBOL module built over integers. *)
 module SymInt () : SYMBOL = struct
   let count = ref 0                                     (* !count equals the length of !token *)
 
@@ -53,6 +61,10 @@ module SymInt () : SYMBOL = struct
   let to_string sym = List.nth !token (!count - 1 - sym)
 end
 
+(*--------------------------------------------------------------------
+  Sort, Func, and Var
+--------------------------------------------------------------------*)
+
 module Sort = SymInt()
 
 type sort = Sort.t
@@ -78,7 +90,7 @@ let typ_equal t1 t2 =
   sort_equal (typ_out t1) (typ_out t2)
 
 
-let typ_is_sort (ty : typ) =
+let typ_is_sort (ty : typ) : bool =
   match (typ_ins ty) with
   | [] -> true
   | _ -> false
@@ -131,7 +143,12 @@ let var_set_sort = decl_set var_decl
 
 let var_get_sort = decl_get var_decl var_equal
 
-type sym = F of func | V of var                         (* function symbols and variables *)
+(*--------------------------------------------------------------------
+  Terms
+--------------------------------------------------------------------*)
+
+type sym = F of func | V of var
+(* function symbols and variables *)
 
 let sym_mk_opt name =
   match func_of_string_opt name with                    (* first check if name corresponds to any known function symbol *)

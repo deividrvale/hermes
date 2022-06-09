@@ -1,5 +1,4 @@
 open Lex
-(* open Core *)
 
 (* Print position information when an error occurs. *)
 let print_pos outx (lexbuf : Lexing.lexbuf) =
@@ -13,7 +12,7 @@ let parse_with_error (lexbuf : Lexing.lexbuf) =
     Printf.fprintf stderr "%a: %s.\n" print_pos lexbuf msg;
     exit (-1)
   | Par.Error ->
-    Printf.fprintf stderr "Syntax error at %a \n" print_pos lexbuf;
+    Printf.fprintf stderr "\nCould not parse string: syntax error at %a \n" print_pos lexbuf;
     exit (-1)
 
 (*

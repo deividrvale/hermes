@@ -1,11 +1,23 @@
 open Syntax.Term
 
-let arr = Syntax.Term.typ_mk ["nat"; "sort"] "asd";;
+(* A test on parsing types *)
+let example =
+"
+[nat; nat ] --> nat
+";;
 
-func_symbolize
+let () =
+  print_endline "Printer: printing a parsed line.";
+  Printer.print_type (Parser.parse_from_string example);
+  print_endline ""
 
+(* Building terms *)
 
+(* symbolize a variable *)
+let x = var_symbolize (fun _ -> ()) "x"
 
-let example = "[nat] ==> nat ";;
+let s = typ_out (typ_mk [] "s")
 
-let typ_example = Parser.parse_from_string example;;
+let () =
+  var_set_sort x s
+

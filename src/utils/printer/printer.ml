@@ -21,9 +21,14 @@ let pp_print_typ_ins f typ_ins =
   (* print_string "]"; *)
 
 let pp_print_typ f typ =
-  open_box 0;
-  pp_print_typ_ins f (typ_ins typ);
-  pp_typ_sep f ();
-  pp_print_sort f (sort_to_string (typ_out typ))
+  match (typ_ins typ) with
+  | [] ->
+    open_box 0;
+    pp_print_sort f (sort_to_string (typ_out typ))
+  | _ :: _ ->
+    open_box 0;
+    pp_print_typ_ins f (typ_ins typ);
+    pp_typ_sep f ();
+    pp_print_sort f (sort_to_string (typ_out typ))
 
 let print_type = pp_print_typ std_formatter

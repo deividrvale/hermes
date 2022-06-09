@@ -1,5 +1,5 @@
 %{
-    open Syntax.Term
+  open Syntax.Term
 %}
 
 %token <string> STRING
@@ -31,4 +31,5 @@ input_sort_list:
   | LBRACE sl = separated_nonempty_list(SEP, baseT) RBRACE { sl }
 
 typ:
+  | baseT                             { typ_mk [] $1 }
   | input_sort_list TY_ARR baseT      { typ_mk $1 $3 }

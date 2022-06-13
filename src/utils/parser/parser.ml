@@ -1,5 +1,9 @@
 open Lex
 
+(*--------------------------------------------------------------------
+  Abstract symbols
+--------------------------------------------------------------------*)
+
 (* Print position information when an error occurs. *)
 let print_pos outx (lexbuf : Lexing.lexbuf) =
   let pos = lexbuf.lex_curr_p in

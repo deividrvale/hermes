@@ -63,3 +63,45 @@ let pp_print_symb (f : formatter) (s : sym) =
 
 let print_symb (s : sym) =
   pp_print_symb std_formatter s
+
+(**
+    auxiliary function to [pp_print_term]
+    it receives an extra boolean argument [b]
+    which defines the behavior of outer-parentheses when
+    printing terms
+*)
+let rec pp_print_term' (f : formatter ) (b : bool) (t : term) =
+  match t with
+  | (Sym s, _) -> pp_print_symb f s
+  | e ->
+    if b then (* an outer parenthesis on terms is not printed *)
+      begin
+        open_hovbox 0;
+        print_app f e;
+        close_box ()
+      end
+    else (* this case is only evaluated when printing applications on the rhs which doesnt occur in the root position*)
+      begin
+        open_hovbox 0;
+        pp_print_string f "(";
+        print_app f e;
+        pp_print_string f ")";
+        close_box ()
+      end
+and print_app (f : formatter) = function
+  e -> open_hovbox 0;
+  print_other_applications f e;
+  close_box ()
+and print_other_applications (f : formatter) (t : term) =
+  match t with
+  | (App (t1, t2), _) ->
+    print_app f t1;
+    pp_print_space f ();
+    pp_print_term' f false t2
+  | e -> pp_print_term' f false e
+
+let pp_print_term (f : formatter) (t : term) =
+  pp_print_term' f true t
+
+let print_term =
+  pp_print_term std_formatter

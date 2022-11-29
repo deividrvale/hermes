@@ -23,12 +23,15 @@ type rule = term * term
   if it is headed by a function symbol
   and it is of base type
 *)
-let rule_check_lhs (((l, ty), _) : rule) : bool =
+let rec rule_check_lhs (((l, ty), _) : rule) : bool =
   match l with
   | Sym (F _) -> typ_is_sort ty
   | Sym (V _) -> false
-  | App ((Sym (F _), _), _) -> typ_is_sort ty
-  | _ -> false
+  | l -> test_head_symbol l && typ_is_sort ty
+and test_head_symbol = function
+    Sym (V _) -> false
+  | Sym (F _) -> true
+  | App ((l, _), _) -> test_head_symbol l
 
 (*
   A (rhs) is syntactically valid if
@@ -43,5 +46,5 @@ let rule_check_rhs (((_, l_ty) as lhs, ((_, r_ty) as rhs)) : rule) : bool =
       if is_sublist var_equal r_vars (term_get_vars lhs) && typ_equal l_ty r_ty
       then true else false
 
-let rule_check_syntax =
+let rule_check =
   fun rul -> rule_check_lhs rul && rule_check_rhs rul

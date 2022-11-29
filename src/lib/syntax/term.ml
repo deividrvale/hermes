@@ -1,13 +1,13 @@
-(*--------------------------------------------------------------------
+(*-----------------------------------------------------------------------------
   Abstract symbols
---------------------------------------------------------------------*)
+-----------------------------------------------------------------------------*)
 module type SYMBOL = sig
   type t
   val equal : t -> t -> bool
   val sylst : unit -> t list
-  (* sylst returns a list of all known symbols *)
+  (** sylst returns a list of all known symbols *)
   val of_string_opt : string -> t option
-  (* of_string_opt looks up the given name and fails when no known symbol has the name *)
+  (** of_string_opt looks up the given name and fails when no known symbol has the name *)
   val symbolize : (t -> unit) -> string -> t
   (* symbolize registers the given name (if not registered already) and returns the corresponding symbol *)
   val to_string : t -> string

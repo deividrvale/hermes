@@ -41,6 +41,8 @@ val func_equal : func -> func -> bool
 
 val func_sylst : unit -> func list
 
+val func_of_string : string -> func
+
 val func_of_string_opt : string -> func option
 
 val func_symbolize : (func -> unit) -> string -> func
@@ -66,6 +68,8 @@ are structurally equal.
 
 val var_sylst : unit -> var list
 
+val var_of_string : string -> var
+
 val var_of_string_opt : string -> var option
 
 val var_symbolize : (var -> unit) -> string -> var
@@ -89,6 +93,8 @@ type ('a, 'b) term_tree =
   | App of (('a, 'b) term_tree * 'b) * (('a, 'b) term_tree * 'b)
 
 type term = (sym, typ) term_tree * typ
+
+val term_mk : (string, 'b) term_tree -> term
 
 val term_mk_opt : (string, 'b) term_tree -> term option
 

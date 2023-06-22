@@ -1,6 +1,6 @@
 %{
   open Syntax.Term
-  open File
+  open File.Onijn
 %}
 
 // Tokens
@@ -16,37 +16,40 @@
 %token RULE_ID
 %token HAS_TYPE
 
+%token COLON
+
 %token SEP
 %token EOF
 
 // Declarations
-%start typ parse_term_tree file
+%start parse_term_tree file debug_parser
 
-%type < typ > typ
+%type < fakeTy > fake_ty
 %type < (string, unit) term_tree > term_tree
 %type < (string, unit) term_tree > parse_term_tree
 
-%type < string * typ > sym_dec
-%type < string * typ > var_dec
-%type < (string * typ) list > signature
-%type < (string * typ) list > variables
+%type < string * fakeTy > sym_dec
+%type < string * fakeTy > var_dec
+%type < (string * fakeTy) list > signature
+%type < (string * fakeTy) list > variables
 %type < (string, unit) term_tree * (string, unit) term_tree > rule
 %type < ( (string, unit) term_tree * (string, unit) term_tree ) list > trs
 
-%type < File.parsed_file > file
+%type < 'a > debug_parser
+
+%type < File.Onijn.parsed_file > file
 
 %%
 
 // Types
 baseT:
-  | STRING                            { $1 }
+    | STRING { $1 }
+    | LPAREN baseT RPAREN { $2 }
 
-input_sort_list:
-  | LBRACE sl = separated_nonempty_list(SEP, baseT) RBRACE { sl }
-
-typ:
-  | baseT                             { typ_mk [] $1 }
-  | input_sort_list TY_ARR baseT      { typ_mk $1 $3 }
+fake_ty:
+    | baseT { Name $1 }
+    | fake_ty TY_ARR fake_ty { Arr ($1, $3) }
+    | LPAREN fake_ty RPAREN { $2 }
 
 // Terms a.k.a terms tree
 parse_term_tree:
@@ -65,10 +68,10 @@ non_app:
   | LPAREN t = term_tree RPAREN       { t }
 
 sym_dec:
-  f = STRING HAS_TYPE ty = typ { (f, ty) }
+  f = STRING COLON ty = fake_ty { (f, ty) }
 
 var_dec:
-  x = STRING HAS_TYPE ty = typ { (x, ty) }
+  x = STRING COLON ty = fake_ty { (x, ty) }
 
 signature:
   ls = separated_nonempty_list(SEP, sym_dec) { ls }
@@ -83,7 +86,10 @@ trs:
   ls = separated_nonempty_list(SEP, rule)  { ls }
 
 file:
-  SIG_ID LBRACE s = signature RBRACE
-  VAR_ID LBRACE v = variables RBRACE
-  RULE_ID LBRACE r = trs RBRACE
-  EOF { parsed_file_mk s v r }
+  SIG_ID COLON LBRACE s = signature RBRACE
+  VAR_ID COLON LBRACE v = variables RBRACE
+  RULE_ID COLON LBRACE r = trs RBRACE
+  EOF { File.Onijn.parsed_file_mk s v r }
+
+debug_parser:
+    | term_tree EOF { $1 }

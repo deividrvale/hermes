@@ -1,0 +1,9 @@
+(library
+ (name hermes_parser)
+ (libraries syntax file parser))
+
+(menhir
+ (modules par))
+
+(ocamllex
+ (modules lex))

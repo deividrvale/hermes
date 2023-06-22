@@ -1,45 +1,87 @@
-(* A very simple main module *)
+let usage_msg = "usage: hermes <file>\n
+  The input TRS should follow a specific format.
+  The following grammar describes the main tokens.
 
-(* Print string and flush standard output --- side effects baby! *)
-let print_string_flush s = (print_string s ; flush stdout)
+  sort, fn, var := ['a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z' '0'-'9']*
 
-(* Defines string for man page. *)
-let str_usage = "\
-\n\
-Usage :\n\
--------\n\
-\n\
-hermes help                : print help\n\
-\n\
-hermes version             : show version\n\
-\n\
-"
+  type := sort | sort -> type
 
-exception Bad_usage
+  term := var | fn | term term
 
-(* Get arguments provided by the user. *)
-let getArgument i =
-    if i < Array.length Sys.argv then
-        Sys.argv.(i)
-    else
-        raise Bad_usage
+  rewrite_rule := term => term
 
-let print_help () =
-    print_string_flush str_usage
+  An input file is then described as follows:
+
+  Signature: [ fn_0 : A_1 ; ... ; fn_k : A_K ]
+  Rules: [ rule_1 ; ... ; rule_n ]
+
+  So, a signature is a list of type declarations.
+  Hermes will recognize the function symbols and give types for the variables automatically.
+  A TRS is a list of rules.
+
+  As an example, we consider below the TRS implementing addition over the natural
+  numbers.
+
+  Signagure: [
+    zero : nat;
+    suc : nat -> nat;
+    add : nat -> nat -> nat
+  ]
+
+  Rules: [
+    add x 0 => x;
+    add x (suc y) => suc (add x y)
+  ]
+
+  See below the list of possible calls to hermes."
+
+  let version_msg =
+  "The Hermes rewriting complexity static analysis tool, version 0.1.0\n
+  This version is used in the paper \"Rewriting Complexity Analysis through Tuple Interpretations\",
+  by Deivid Vale and Liye Guo.
+  "
 
 let print_version () =
-  print_string_flush "0.1.0"
+  print_endline version_msg;
+  exit 0
 
-let no_args () =
-    print_help ()
+let input_files : (string list) ref = ref []
 
-let main () =
-  try (match getArgument 1 with
-        | "help"    -> print_help ()
-        | "version" -> print_version ()
-        | _         -> raise Bad_usage
-      )
-  with Bad_usage -> no_args ()
-;;
+let output_file = ref ""
 
-main ()
+let anon_cmd filename =
+  input_files := filename :: !input_files
+
+let spec_list = [
+  (
+  "-o",
+  Arg.Set_string output_file,
+  "Set the output filename for the termination proof."
+  );
+  (
+  "-v",
+  Arg.Unit print_version ,
+  "Print versioning information."
+  )
+]
+
+
+
+let () =
+  Arg.parse spec_list anon_cmd usage_msg;
+
+  match !input_files with
+  | [] -> print_endline "hermes: error: no input file provided.\n"; Arg.usage spec_list usage_msg; exit (1)
+  | _ -> begin
+    let config = Config.get_initial_config () in (
+      print_string "Running Hermes with Default settings."
+    );
+    print_endline "\n\nProcessing file: ";
+    Lists.print_list Fun.id !input_files;
+    (* For now Hermes only print the string of the file it gets. *)
+    List.iter (fun x ->
+      let input = Io.get_file_content x in
+      let _ = Prover.get_data input in
+        print_string input
+    ) !input_files
+  end

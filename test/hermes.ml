@@ -1,9 +1,11 @@
 open Syntax.Term
 open Syntax.Rwt_rule
 
+(* (* open Syntax.Term *)
+
 (* A test on parsing types *)
-let example = "[nat; nat ] --> nat";;
-let tp = Parser.parse_from_string Parser.parser_typ example
+(* let example = "[nat; nat ] --> nat";; *)
+(* let tp = Parser.parse_from_string Parser.parser_typ example *)
 
 (* Building terms *)
 
@@ -17,16 +19,16 @@ let () =
   func_set_typ f (typ_mk ["nat"; "nat"] "nat")
 
 let () =
-  Printer.print_type tp;
+  (* Printer.print_type tp; *)
   Format.print_newline ()
 
 let input_lhs = "f (x) x"
 let input_rhs = "f x"
 
-let parsed_lhs = Parser.parse_from_string Parser.parser_term_tree input_lhs
-let parsed_rhs = Parser.parse_from_string Parser.parser_term_tree input_rhs
+(* let parsed_lhs = Parser.parse_from_string Parser.parser_term_tree input_lhs *)
+(* let parsed_rhs = Parser.parse_from_string Parser.parser_term_tree input_rhs *)
 let () =
-  let (lhs, rhs) = (term_mk_opt parsed_lhs, term_mk_opt parsed_rhs)  in
+  (* let (lhs, rhs) = (term_mk_opt parsed_lhs, term_mk_opt parsed_rhs)  in *)
   match lhs with
   | Some t ->
     Format.print_string "Parsed term: ";
@@ -39,7 +41,7 @@ let () =
     Format.print_string "terms didn't get created"
 
 
-let file = "
+(* let file = "
 signature [
   zero : nat;
   one : nat
@@ -50,7 +52,7 @@ vars [
 rules [
   zero ==> jose
 ]
-"
+" *)
 
 let f = Parser.parse_from_string Parser.parse_file file
 
@@ -72,4 +74,39 @@ let () =
       List.map var_to_string (var_sylst ())
     )
   )
+ *)
 
+let file = "
+ Signature : [
+   Z : nat;
+   S : nat -> nat;
+   add : nat -> nat -> nat
+ ]
+ Vars : [
+   x : nat -> nat;
+   y : nat
+ ]
+ Rules : [
+  add x Z => Z;
+  add x (S y) => S (add x y)
+ ]"
+
+(* testing new parser structure *)
+let parsed_file =
+  Hermes_parser.parse_from_string
+  Hermes_parser.parser
+  Hermes_parser.lexer
+  file
+
+
+let data = File.Onijn.process_file parsed_file
+
+let debug_parser =
+  Hermes_parser.parse_from_string
+  Hermes_parser.debug_parser
+  Hermes_parser.lexer
+  "x"
+
+let () =
+  Lists.print_list func_to_string (func_sylst ());
+  Lists.print_list var_to_string (var_sylst ())

@@ -19,13 +19,13 @@ rule lexer = parse
   | ")"             { RPAREN }
   | "["             { LBRACE }
   | "]"             { RBRACE }
-  | ":"             { HAS_TYPE  }
+  | ":"             { COLON  }
   | ";"             { SEP    }
-  | "signature"     { SIG_ID  }
-  | "vars"          { VAR_ID  }
-  | "rules"         { RULE_ID }
-  | "==>"              { RW_ARR }
-  | "-->"              { TY_ARR }
+  | "Signature"     { SIG_ID  }
+  | "Vars"          { VAR_ID  }
+  | "Rules"         { RULE_ID }
+  | "=>"              { RW_ARR }
+  | "->"              { TY_ARR }
   | name               { STRING (Lexing.lexeme lexbuf) }
   | _                  { raise (SyntaxError ("Unexpected character: " ^ Lexing.lexeme lexbuf))}
   | eof             { EOF }

@@ -1,5 +1,5 @@
 open Syntax.Term
-open Syntax.Rwt_rule
+open Syntax.Trs
 
 (* (* open Syntax.Term *)
 
@@ -87,7 +87,7 @@ let file = "
    y : nat
  ]
  Rules : [
-  S x => add x y
+  S x => y
 ]
  "
 

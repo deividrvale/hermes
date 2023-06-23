@@ -1,0 +1,3 @@
+(library
+ (name read_model)
+ (libraries z3 monad))

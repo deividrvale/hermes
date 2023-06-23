@@ -1,5 +1,5 @@
-open Syntax.Term
-open Syntax.Trs
+(* (* open Syntax.Term
+open Syntax.Trs *)
 
 (* (* open Syntax.Term *)
 
@@ -109,4 +109,4 @@ let debug_parser =
 
 let () =
   Lists.print_list func_to_string (func_sylst ());
-  Lists.print_list var_to_string (var_sylst ())
+  Lists.print_list var_to_string (var_sylst ()) *)

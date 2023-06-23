@@ -1,4 +1,4 @@
-module type Z3ENV = sig
+(* module type Z3ENV = sig
   type t
   val mk_env : (string * string) list -> t
   val mk_int_const : int -> t -> Z3.Expr.expr
@@ -150,4 +150,4 @@ module IntVec = struct
     let retrieve_mono ((_, c::_)::_, atoms) = List.assoc c dict_coef, atoms in
     let retrieve_poly p = List.map retrieve_mono (simpl p) in
     retrieve_poly f_c, List.map retrieve_poly f_s
-end
+end *)

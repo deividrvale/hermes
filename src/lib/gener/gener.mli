@@ -2,7 +2,10 @@ open Syntax.Term
 open Tuple
 open Templ
 
-(** Interpretation generation for a single function symbol. *)
+(** Interpretation generation for a single function symbol.
+
+[gener_f k tpl fn] generates an interpretation for the function symbol [fn] using a dimention function [k], a template [tpl].
+*)
 val gener_f : (sort -> int) -> templ -> func -> (cost * size) Undet.t
 
 (** Interpretation generation for a single variable. *)

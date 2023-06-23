@@ -16,8 +16,19 @@ val rule_check_rhs : rule -> unit
     is valid.
 *)
 
+open Term
+
+type trs = rule list
+
+(* val get_rule_head : rule -> func *)
+
+val def_symb : trs -> func list
+
+val ctr_symb : trs -> func list
+
 open Format
 
 val pp_print_rule : formatter -> rule -> unit
 
 val print_rule : rule -> unit
+

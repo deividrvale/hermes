@@ -1,0 +1,3 @@
+(library
+ (name z3env)
+ (libraries z3))

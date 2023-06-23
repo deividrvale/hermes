@@ -83,13 +83,13 @@ let file = "
    add : nat -> nat -> nat
  ]
  Vars : [
-   x : nat -> nat;
+   x : nat;
    y : nat
  ]
  Rules : [
-  add x Z => Z;
-  add x (S y) => S (add x y)
- ]"
+  S x => add x y
+]
+ "
 
 (* testing new parser structure *)
 let parsed_file =

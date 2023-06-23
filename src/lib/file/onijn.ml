@@ -61,7 +61,7 @@ let fakeTy_to_sort x fty =
   | Name n -> typ_out (typ_mk [] n)
   | _ -> begin
     let _ = print_string (var_fakeTyArrMsg x fty) in
-    exit 1
+    exit 23
   end
 
 let fakeTy_to_ty fty =
@@ -105,11 +105,14 @@ let to_trs (trs : trs) =
   let rules = List.map
     (fun (lhs, rhs) -> (term_mk lhs, term_mk rhs)) trs
   in
-  if List.for_all rule_check rules then
+    List.iter rule_check rules;
+    (* let _ = print_string "here" in *)
+    rules
+  (* if List.for_all rule_check rules then
     rules
   else
     let _ = print_string "Some rules are invalid.\n" in
-    exit 1
+    exit 1 *)
 
 (*-----------------------------------------------------------------------------
   File

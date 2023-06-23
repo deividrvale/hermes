@@ -125,7 +125,7 @@ val print_var : var -> unit
 
 val pp_print_symb : formatter -> sym -> unit
 
-val print_sym : sym -> unit
+val print_symb : sym -> unit
 
 val pp_print_term : formatter -> term -> unit
 

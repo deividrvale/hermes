@@ -224,6 +224,7 @@ let term_get_typ = snd
 (*--------------------------------------------------------------------
   Pretty printing for types
 --------------------------------------------------------------------*)
+open Format
 
 let pp_typ_sep (f : formatter) = fun () ->
   pp_print_space f ();
@@ -258,21 +259,18 @@ let print_type = pp_print_typ std_formatter
 --------------------------------------------------------------------*)
 open Format
 let pp_print_func (f : formatter) (func : func) =
-  open_box 0;
   pp_print_string f (func_to_string func)
 
 let print_func func =
   pp_print_func std_formatter func
 
 let pp_print_var (f : formatter) (x : var) =
-  open_box 0;
   pp_print_string f (var_to_string x)
 
 let print_var (x : var) =
   pp_print_var std_formatter x
 
 let pp_print_symb (f : formatter) (s : sym) =
-  open_box 0;
   match s with
     | V x -> pp_print_var f x
     | F func -> pp_print_func f func
@@ -292,20 +290,20 @@ let rec pp_print_term' (f : formatter ) (b : bool) (t : term) =
   | e ->
     if b then (* an outer parenthesis on terms is not printed *)
       begin
-        open_hovbox 0;
+        open_hbox ();
         print_app f e;
         close_box ()
       end
     else (* this case is only evaluated when printing applications on the rhs which doesnt occur in the root position*)
       begin
-        open_hovbox 0;
+        open_hbox ();
         pp_print_string f "(";
         print_app f e;
         pp_print_string f ")";
         close_box ()
       end
 and print_app (f : formatter) = function
-  e -> open_hovbox 0;
+  e -> open_hbox ();
   print_other_applications f e;
   close_box ()
 and print_other_applications (f : formatter) (t : term) =

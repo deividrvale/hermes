@@ -4,11 +4,13 @@ open Templ
 
 (** Interpretation generation for a single function symbol.
 
-[gener_f k tpl fn] generates an interpretation for the function symbol [fn] using a dimention function [k], a template [tpl].
+[gener_f k tpl fn] generates an interpretation for the function symbol [fn] using a dimension function [k], a template [tpl].
 *)
 val gener_f : (sort -> int) -> templ -> func -> (cost * size) Undet.t
 
-(** Interpretation generation for a single variable. *)
+(** Interpretation generation for a single variable.
+[gener_v k ]
+*)
 val gener_v : (sort -> int) -> int -> var -> cost * size
 
 (** Assertion generation for a single rewrite rule. *)

@@ -36,3 +36,6 @@ let cons_uniq (eq : 'a -> 'a -> bool) (x : 'a) (xs : 'a list) =
 
 let remove_duplicates (eq : 'a -> 'a -> bool) (xs : 'a list) : 'a list =
   List.rev (List.fold_left (fun ys y -> cons_uniq eq y ys) [] xs)
+
+
+(* let map_from_list  *)

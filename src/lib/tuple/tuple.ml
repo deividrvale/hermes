@@ -61,3 +61,16 @@ let apply
   Cost (P.add (P.add fun_n arg_n) n, f),
   fun_s arg_s
 [@@warning "-8"]
+
+let saturate =
+  let rec saturate_aux var par = function
+      [] ->
+      par
+    | hd::tl ->
+      saturate_aux
+        (var + 1)
+        (apply par
+           (Cost (P.zero, Ret ()),
+            Size (Ret (List.init hd (fun i -> [(C.one, [indet var i])])))))
+        tl in
+  saturate_aux 0

@@ -20,11 +20,6 @@ let gener_v dim v sy =
                        (fun i -> [(C.one, [indet v i])]))) in
   c, s
 
-let nonneg e =
-  let open Reader(Z3env) in
-  let* zero = mk_int_numeral 0 in
-  mk_ge e zero
-
 let gener_r interp_f interp_v (lhs, rhs) =
   let rec interp = function
       Sym (F sy), _ ->
@@ -48,14 +43,22 @@ let gener_r interp_f interp_v (lhs, rhs) =
            mk_mul (coef::fcts))
         p in
     let* e = mk_add adds in
-    nonneg e in
+    let* zero = mk_int_numeral 0 in
+    mk_ge e zero in
   let poly_nonneg = rev_mapM (fun (c, _) -> coef_nonneg c) in
   let* assert_c = poly_nonneg (simpl_sub l_n (P.add r_n P.one)) in
   let* assert_s = rev_mapM poly_nonneg (List.rev_map2 simpl_sub l_s r_s) in
   return @@ List.rev_append assert_c @@ List.concat assert_s
 [@@warning "-8"]
 
-let undet_nonneg c =
+let undet_ge c n =
   let open Reader(Z3env) in
-  let* e = mk_int_const c in
-  nonneg e
+  let* c = mk_int_const c in
+  let* n = mk_int_numeral n in
+  mk_ge c n
+
+let undet_le c n =
+  let open Reader(Z3env) in
+  let* c = mk_int_const c in
+  let* n = mk_int_numeral n in
+  mk_ge n c

@@ -110,6 +110,8 @@ val term_get_typ : term -> typ
     [term_get_typ tm] is the type of [tm].
 *)
 
+val term_get_head : ('a, 'b) term_tree * 'b -> 'a
+
 (*--------------------------------------------------------------------
   Pretty Printing
 --------------------------------------------------------------------*)

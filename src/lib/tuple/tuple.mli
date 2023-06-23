@@ -39,3 +39,6 @@ val bound : P.t list -> int -> A.t
 
 (** Semantic application. *)
 val apply : cost * size -> cost * size -> cost * size
+
+(** Saturation reveals the body. *)
+val saturate : cost * size -> int list -> cost * size

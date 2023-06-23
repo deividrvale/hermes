@@ -108,7 +108,7 @@ let to_trs (trs : trs) =
   if List.for_all rule_check rules then
     rules
   else
-    let _ = print_string "here" in
+    let _ = print_string "Some rules are invalid.\n" in
     exit 1
 
 (*-----------------------------------------------------------------------------

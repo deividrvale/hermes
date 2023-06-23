@@ -109,3 +109,24 @@ val term_get_typ : term -> typ
 (**
     [term_get_typ tm] is the type of [tm].
 *)
+
+(*--------------------------------------------------------------------
+  Pretty Printing
+--------------------------------------------------------------------*)
+open Format
+
+val pp_print_func : formatter -> func -> unit
+
+val print_func : func -> unit
+
+val pp_print_var : formatter -> var -> unit
+
+val print_var : var -> unit
+
+val pp_print_symb : formatter -> sym -> unit
+
+val print_sym : sym -> unit
+
+val pp_print_term : formatter -> term -> unit
+
+val print_term : term -> unit

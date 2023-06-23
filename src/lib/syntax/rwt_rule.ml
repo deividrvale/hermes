@@ -18,6 +18,7 @@ let rec is_sublist eq (xs : 'a list) (ys : 'a list) : bool =
 type rule = term * term
 
 
+
 (*
   a lhs is syntactically valid
   if it is headed by a function symbol

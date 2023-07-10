@@ -74,3 +74,8 @@ let saturate =
             Size (Ret (List.init hd (fun i -> [(C.one, [indet var i])])))))
         tl in
   saturate_aux 0
+
+let poly_to_string coef_to_string atom_to_string poly =
+  let mono_to_string (c, l) =
+    coef_to_string c::List.map atom_to_string l |> String.concat "*" in
+  List.map mono_to_string poly |> String.concat " + "

@@ -42,3 +42,6 @@ val apply : cost * size -> cost * size -> cost * size
 
 (** Saturation reveals the body. *)
 val saturate : cost * size -> int list -> cost * size
+
+(** The string representation of a polynomial. *)
+val poly_to_string : (C.t -> string) -> (A.t -> string) -> P.t -> string

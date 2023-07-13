@@ -50,7 +50,7 @@ let indet var idx =
 type A.repr += Bound
 
 let bound vec idx : A.t = {
-  simpl = List.nth vec idx;
+  simpl = simpl @@ List.nth vec idx;
   exhib = Bound;
   equal = Fun.const false }
 

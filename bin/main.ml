@@ -59,7 +59,7 @@ let () =
       Arg.usage spec_list usage_msg;
       exit 1
   | _ ->
-      let config = Config.get_initial_config () in
+      let config = Config.get_config () in
       print_string "Running Hermes with Default settings.";
       print_endline "\n\nProcessing file: ";
       Lists.print_list Fun.id !input_files;

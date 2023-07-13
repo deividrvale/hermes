@@ -12,5 +12,7 @@ type templ = { cnt : int list -> int;                    (** Overestimation of t
 (** Cost generation based on a template. *)
 val cost_t : templ -> int list -> cost Undet.t
 
-(** Size generation based on a template. *)
+(** Size generation based on a template.
+[size_t tmpl in_dims out_dim] <explain> the arguments
+*)
 val size_t : templ -> int list -> int -> size Undet.t

@@ -72,4 +72,4 @@ let config = {
   }
 }
 
-let get_initial_config () = config
+let get_config () = config

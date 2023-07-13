@@ -37,5 +37,10 @@ let cons_uniq (eq : 'a -> 'a -> bool) (x : 'a) (xs : 'a list) =
 let remove_duplicates (eq : 'a -> 'a -> bool) (xs : 'a list) : 'a list =
   List.rev (List.fold_left (fun ys y -> cons_uniq eq y ys) [] xs)
 
+let map_from_assoc_list (eq : 'a -> 'a -> bool) (lst : ('a * 'b) list ) : 'a -> 'b =
+  fun x ->
+      List.find (fun y -> eq x (fst y)) lst |> snd
 
-(* let map_from_list  *)
+let is_empty = function
+  | [] -> true
+  | _ -> false

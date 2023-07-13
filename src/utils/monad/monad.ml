@@ -50,4 +50,14 @@ module Utility (M : MONAD) = struct
         let* m in
         rev_replicateM_aux (m::accum) (count - 1) in
     rev_replicateM_aux []
+
+  let rev_ListTransformerM xs =
+    let rec l_transformerM_aux accum = function
+      | [] -> return accum
+      | hd :: tl ->
+        let* hd in
+        l_transformerM_aux (hd :: accum) tl
+      in
+    l_transformerM_aux [] xs
+
 end

@@ -40,7 +40,20 @@ val bound : P.t list -> int -> A.t
 (** Semantic application. *)
 val apply : cost * size -> cost * size -> cost * size
 
-(** Saturation reveals the body. *)
+(**
+[saturate cs dim] returns the cost-size [cs] in fully applied form, so the user can inspect its body.
+The argument [dim] is a list of integers collecting
+the dimension of each argument.
+
+For instance, consider a generic expression
+[cs = (λxyz.P,λxyz.Q)] with dimentions [[2,3,5]].
+[saturate ]
+<continue the example later>
+
+{b Note:} the caller is responsible of providing the correct
+list [dim].
+
+*)
 val saturate : cost * size -> int list -> cost * size
 
 (** The string representation of a polynomial. *)

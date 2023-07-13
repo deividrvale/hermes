@@ -110,3 +110,71 @@ let debug_parser =
 let () =
   Lists.print_list func_to_string (func_sylst ());
   Lists.print_list var_to_string (var_sylst ()) *)
+
+open Syntax.Term
+
+(* let f = Syntax.Term.func_symbolize (fun _ -> ()) "f"
+let x = Syntax.Term.var_symbolize (fun _ -> ()) "x"
+
+let typ = Syntax.Term.typ_mk ["nat"] "nat"
+let typ' = Syntax.Term.typ_mk [] "nat"
+
+let _ = Syntax.Term.func_set_typ f typ
+let _ = Syntax.Term.var_set_sort x (Syntax.Term.typ_out typ')
+
+let tm_f : term = (Sym (F f), typ)
+let tm_x : term = (Sym (V x), typ')
+
+let lhs : term = (App (tm_f, tm_x), typ')
+let rhs : term = tm_x
+let rule = (lhs, rhs) *)
+
+
+(* Trying to do it from a file now. *)
+let file = "
+Signature: [
+  f : o -> o ;
+  s : o -> o
+]
+
+Vars: [
+  X : o
+]
+
+Rules: [
+  f X => s X ;
+  f (s (s X)) => s (f (f X))
+]
+"
+
+let parsed_file =
+  Hermes_parser.parse_from_string
+  Hermes_parser.parser
+  Hermes_parser.lexer
+  file
+
+let trs_data = File.Onijn.process_file parsed_file
+
+let p = Strat.Progressive.progressive trs_data
+
+(* let exp = p.asserts (Z3env.mk_env []) |> List.flatten *)
+
+let print_pairs (i, exp) =
+  (Int.to_string i) ^ " |-> " ^
+  Z3.Expr.to_string exp
+
+
+
+(* let () =
+  Lists.print_list Z3.Expr.to_string p *)
+
+
+
+let () =
+  let open Monad.Option in
+  let this_shit = let* p in
+    Read_model.get_assigns p in
+  match this_shit  with
+  | None -> print_endline "none"
+  | Some lst ->
+    Lists.print_list print_pairs lst

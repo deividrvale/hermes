@@ -42,3 +42,12 @@ val remove_duplicates : ('a -> 'a -> bool) -> 'a list -> 'a list
 (**
     [remove_duplicates f xs] removes duplicated elements from [xs] utilizing [f] as equality operator.
 *)
+
+val map_from_assoc_list : ('a -> 'a -> bool) -> ('a * 'b) list -> 'a -> 'b
+(**
+    [map_from_assoc_list eq xs] is the function generated form the assoc list [xs] using [eq]
+    as equality operator in the domain.
+*)
+
+val is_empty : 'a list -> bool
+(** [is_empty xs] is whether the list [xs] is empty. *)

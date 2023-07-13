@@ -1,11 +1,15 @@
 open Syntax.Term
+
 module StringSet = Set.Make (String)
 
+(*-----------------------------------------------------------------------------
+    Functions that print critical errors and exit the application
+  ---------------------------------------------------------------------------*)
 let symbolize_err symb =
   let msg =
 "The name " ^ symb ^ " is duplicated in the input file.\n\
-Please note that the declarations for the signature and variables must be unique as two function symbols (and variables) cannot have different types."
-  in
+Please note that the declarations for the signature and variables must be unique
+as two function symbols (and variables) cannot have different types." in
   print_string msg;
   exit 1
 
@@ -81,7 +85,7 @@ let register_signature (s : signature) =
   List.iter (fun (f, ty) -> func_set_typ (func_of_string f) (fakeTy_to_ty ty)) s
 
 (*-----------------------------------------------------------------------------
-    Signature
+    Variable enviroment
   ---------------------------------------------------------------------------*)
 type environment = (string * fakeTy) list
 
@@ -105,19 +109,20 @@ let to_trs (trs : trs) =
   let open Syntax.Trs in
   let rules = List.map (fun (lhs, rhs) -> (term_mk lhs, term_mk rhs)) trs in
   List.iter rule_check rules;
-  (* let _ = print_string "here" in *)
   rules
-(* if List.for_all rule_check rules then
-     rules
-   else
-     let _ = print_string "Some rules are invalid.\n" in
-     exit 1 *)
 
 (*-----------------------------------------------------------------------------
     File
   ---------------------------------------------------------------------------*)
-type parsed_file = { ar : signature; var : environment; rules : trs }
-type trs_data = { trs : (term * term) list }
+type parsed_file = {
+  ar : signature;
+  var : environment;
+  rules : trs
+}
+
+type trs_data = {
+  trs : (term * term) list
+}
 
 let parsed_file_mk ar var rules = { ar; var; rules }
 

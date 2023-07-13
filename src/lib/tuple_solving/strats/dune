@@ -1,0 +1,3 @@
+(library
+ (name strat)
+ (libraries shape file config syntax gener affine monad tuple read_model))

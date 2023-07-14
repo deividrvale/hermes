@@ -53,7 +53,7 @@ let int_map cfg =
     gen_affine_int cfg.state cfg.int_key cfg.fn_list
 
 (*-----------------------------------------------------------------------------
-   Assertion of Upper Bounds
+  Assertion of Upper Bounds
   ---------------------------------------------------------------------------*)
 (* What makes an affine interpretation additive is the assertion on the
   upper bounds of the underteminates that are multiplied by a monomial,
@@ -80,7 +80,7 @@ let get_und_coef poly =
 let assert_le unds =
   List.map (fun name -> Gener.undet_le name 1) unds
 
-(*  *)
+(* Generate the constraints over the undeterminate coefficients *)
 let additive_expr (int_key : sort -> int) func_int f =
   let indims = G.get_indims int_key f in
   let tpl = Tuple.saturate (func_int f) indims in

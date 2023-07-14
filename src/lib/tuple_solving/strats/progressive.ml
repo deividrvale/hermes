@@ -29,6 +29,26 @@ let set_config state int_key fn_list choice =
     choice = choice
   }
 
+open Tuple
+(* <test> Printing *)
+let coef_to_string = function
+  | [(1, [u])] -> "c_" ^ Int.to_string u
+  | _ -> exit 25
+
+let indet_to_string (atom : A.t) =
+  match atom.exhib with
+  | Indet (name,proj) -> "X_" ^ (Int.to_string name) ^ "," ^ Int.to_string proj
+  | _ -> exit 26
+
+
+
+let print_cs = function
+  | Cost (l_n, _), Size (Ret l_s) ->
+    print_endline (Tuple.poly_to_string coef_to_string indet_to_string ( Tuple.simpl l_n));
+    print_endline "";
+    List.iter (fun x -> print_endline (Tuple.poly_to_string coef_to_string indet_to_string (simpl x))) l_s
+  | _ -> exit 24
+
 let progressive (trs : F.trs_data) =
   (* Get General Hermes Config *)
   let hermes_cfg = Config.get_config () in
@@ -46,6 +66,14 @@ let progressive (trs : F.trs_data) =
   (* Combine the Intepretations to form the j_map and valuation function *)
   let j_map = Shape.Generator.func_int (List.rev_append ctrs.int_assoc def.int_assoc) in
   let valuation = Shape.Generator.gen_var_int ctrs_config.int_key in
+
+  (* <test> Print an int. *)
+  let () =
+    let f = List.nth (func_sylst ()) 2 in
+    print_cs
+    (saturate (j_map f)
+    (Gen.get_indims ctrs_config.int_key f) )
+  in
 
   let gen_rules_expr j_map valuation rules =
     let exprs = List.map (Gener.gener_r j_map valuation) rules in
@@ -69,8 +97,8 @@ let progressive (trs : F.trs_data) =
       let* def_asserts in
       let* get_asserts in
       let* rules_expressions in
-      return (ctrs_asserts @ def_asserts @ get_asserts @ rules_expressions)
-      (* return (rules_expressions) *)
+      (* return (ctrs_asserts @ def_asserts @ get_asserts @ rules_expressions) *)
+      return (get_asserts @ rules_expressions)
   in
   let model =
     (let open Monad.Reader(Z3env) in

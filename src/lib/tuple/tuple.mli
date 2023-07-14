@@ -31,6 +31,10 @@ type cost = Cost of P.t * (P.t list, cost, unit) hoas
 (** Size tuples. *)
 type size = Size of (P.t list, size, P.t list) hoas
 
+(** *)
+type A.repr += Indet of int * int
+
+
 (** Indeterminates. *)
 val indet : int -> int -> A.t
 

@@ -133,17 +133,22 @@ let rule = (lhs, rhs) *)
 (* Trying to do it from a file now. *)
 let file = "
 Signature: [
-  f : o -> o ;
+  zero : o ;
+  minus : o -> o -> o ;
+  quot : o -> o -> o ;
   s : o -> o
 ]
 
 Vars: [
-  X : o
+  X : o;
+  Y : o
 ]
 
 Rules: [
-  f X => s X ;
-  f (s (s X)) => s (f (f X))
+  minus X zero => X ;
+  minus (s X) (s Y) => minus X Y ;
+  quot zero (s Y) => zero ;
+  quot (s X) (s Y) => s (quot (minus X Y) (s Y))
 ]
 "
 
@@ -160,15 +165,11 @@ let p = Strat.Progressive.progressive trs_data
 (* let exp = p.asserts (Z3env.mk_env []) |> List.flatten *)
 
 let print_pairs (i, exp) =
-  (Int.to_string i) ^ " |-> " ^
+  "\n" ^ (Int.to_string i) ^ " := " ^
   Z3.Expr.to_string exp
-
-
 
 (* let () =
   Lists.print_list Z3.Expr.to_string p *)
-
-
 
 let () =
   let open Monad.Option in
@@ -178,3 +179,4 @@ let () =
   | None -> print_endline "none"
   | Some lst ->
     Lists.print_list print_pairs lst
+

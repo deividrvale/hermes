@@ -62,7 +62,7 @@ let apply
   fun_s arg_s
 [@@warning "-8"]
 
-let saturate =
+let saturate cs indims =
   let rec saturate_aux var par = function
       [] ->
       par
@@ -73,7 +73,9 @@ let saturate =
            (Cost (P.zero, Ret ()),
             Size (Ret (List.init hd (fun i -> [(C.one, [indet var i])])))))
         tl in
-  saturate_aux 0
+  let Cost (n, _), Size (Ret s) = saturate_aux 0 cs indims in
+  simpl n, List.map simpl s
+[@@warning "-8"]
 
 let poly_to_string coef_to_string atom_to_string poly =
   let mono_to_string (c, l) =

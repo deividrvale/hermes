@@ -58,7 +58,7 @@ For instance, consider a generic expression
 list [dim].
 
 *)
-val saturate : cost * size -> int list -> cost * size
+val saturate : cost * size -> int list -> P.t * P.t list
 
 (** The string representation of a polynomial. *)
 val poly_to_string : (C.t -> string) -> (A.t -> string) -> P.t -> string

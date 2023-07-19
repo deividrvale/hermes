@@ -27,6 +27,6 @@ let exp c vds =
             ((v, d - 1)::t) in
       exp_aux_aux accum vds in
   let accum = affine.exp c vds in
-  exp_aux accum vds (List.length accum) |> fst
+  exp_aux accum vds (c + List.length accum) |> fst
 
 let quadratic = { cnt; exp }

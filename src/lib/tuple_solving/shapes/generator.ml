@@ -11,10 +11,9 @@ is in fact a list of pairs of function symbols and cost-size tuples
 living in the Templ.Undet.t state monad.
 It will be generally the case that form the output of this the caller will
 apply the state monad to [0].
-This value defines the initial name for the coefficients generated in the body
-of the polynomials.
+This value defines the initial name for the coefficients generated in the body of the polynomials.
 *)
-let gen_func_int (int_key : sort -> int) (template : Templ.templ)
+let func_shapes (int_key : sort -> int) (template : Templ.templ)
     (fn_list : func list) : (func * (cost * size)) list Templ.Undet.t =
   let open Templ.Undet in
   let open Utility (Templ.Undet) in
@@ -35,7 +34,7 @@ let get_outdim (int_key : sort -> int) fn =
   int_key (typ_out (func_get_typ fn))
 
 (* Generates a zero-cost cost component *)
-let gen_zero_cost (f : func) : cost =
+let zero_cost (f : func) : cost =
   let arity = List.length (typ_ins (func_get_typ f)) in
   let rec generator ar =
     match ar with
@@ -43,12 +42,13 @@ let gen_zero_cost (f : func) : cost =
     | _ -> Cost (P.zero, Abs (fun _ -> generator (ar - 1) ))
   in generator arity
 
-let gen_zero_cost_int (int_key : sort -> int) (template : Templ.templ) (fn_list : func list) =
+
+let func_shapes_zero_cost (int_key : sort -> int) (template : Templ.templ) (fn_list : func list) =
   let open Templ.Undet in
   let open Utility (Templ.Undet) in
   let gen_size f = Templ.size_t template (get_indims int_key f) (get_outdim int_key f) in
   let m fn =
-    let cost = (gen_zero_cost fn) in
+    let cost = (zero_cost fn) in
     let* size = gen_size fn in
     return (fn, (cost,size))
   in
@@ -58,15 +58,31 @@ let gen_zero_cost_int (int_key : sort -> int) (template : Templ.templ) (fn_list 
 let func_int intpr =
   Lists.map_from_assoc_list func_equal intpr
 
-
 (*  *)
-let gen_var_int (int_key : sort -> int) =
+let var_int (int_key : sort -> int) =
   let vars = var_sylst () in
   List.combine vars (List.mapi (G.gener_v int_key) vars)
   |> Lists.map_from_assoc_list var_equal
 
-let ge_stm (state : int) =
-  let names = List.init state Fun.id in
-  let stms = List.map (fun name -> Gener.undet_ge name 0) names in
-  let open Monad.Utility(Monad.Reader(Z3env)) in
-  rev_ListTransformerM stms
+let coef_to_string = function
+  | [(1, [name])] -> "c" ^ Int.to_string name
+  | _ -> failwith "Error! Trying to print coefficient of wrong shape."
+
+let indet_to_string (atom : A.t) =
+  match atom.exhib with
+  | Indet (name,proj) ->
+    "X" ^ (Int.to_string name) ^ "_" ^ (Int.to_string proj)
+  | _ -> failwith "Error! Trying to print atom of wrong shape."
+
+let sat_shape_to_string coef indet = function
+  | (cost, size) ->
+      "<" ^ "(" ^ (Tuple.poly_to_string coef indet) cost ^ ")" ^
+      " || " ^
+      "(" ^
+      String.concat ", "
+        (List.map (fun x -> (Tuple.poly_to_string coef indet x)) size) ^
+      ")" ^
+      ">"
+
+let print_sat_shape s =
+  s |> sat_shape_to_string coef_to_string indet_to_string |> print_endline

@@ -127,9 +127,13 @@ let get_rule_head (rule : rule) =
       print_lhs_err VAR rule;
       exit 1
 
-let def_symb (t : trs) = List.map get_rule_head t
+let def_symb (t : trs) =
+  Lists.remove_duplicates func_equal (List.map get_rule_head t)
 
 let ctr_symb (t : trs) =
   let signature = func_sylst () and def_symb = def_symb t in
   List.filter (fun x -> not (Lists.member func_equal x def_symb))
     signature
+
+let split_sig trs =
+  ctr_symb trs, def_symb trs

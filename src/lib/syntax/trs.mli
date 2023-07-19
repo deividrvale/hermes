@@ -32,3 +32,4 @@ val pp_print_rule : formatter -> rule -> unit
 
 val print_rule : rule -> unit
 
+val split_sig : trs -> func list * func list

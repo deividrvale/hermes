@@ -133,22 +133,52 @@ let rule = (lhs, rhs) *)
 (* Trying to do it from a file now. *)
 let file = "
 Signature: [
-  zero : o ;
-  minus : o -> o -> o ;
-  quot : o -> o -> o ;
-  s : o -> o
+  zero : di ;
+  add : di -> di -> di ;
+  app : di -> di -> di ;
+  eq : di -> di -> wg ;
+  false : wg ;
+  if6220min : wg -> di -> di ;
+  if6220minsort : wg -> di -> di -> di ;
+  if6220rm : wg -> di -> di -> di ;
+  le : di -> di -> wg ;
+  min : di -> di ;
+  minsort : di -> di -> di ;
+  nil : di ;
+  rm : di -> di -> di ;
+  s : di -> di ;
+  true : wg
 ]
 
 Vars: [
-  X : o;
-  Y : o
+  X : di;
+  Y : di;
+  Z : di;
+  U : di
 ]
 
 Rules: [
-  minus X zero => X ;
-  minus (s X) (s Y) => minus X Y ;
-  quot zero (s Y) => zero ;
-  quot (s X) (s Y) => s (quot (minus X Y) (s Y))
+  eq zero zero => true ;
+  eq zero (s X) => false ;
+  eq (s X) zero => false ;
+  eq (s X) (s Y) => eq X Y ;
+  le zero Y => true ;
+  le (s X) zero => false ;
+  le (s X) (s Y) => le X Y ;
+  app nil Y => Y ;
+  app (add Z X) Y => add Z (app X Y) ;
+  min (add Z nil) => Z ;
+  min (add Z (add U X)) => if6220min (le Z U) (add Z (add U X)) ;
+  if6220min true (add Z (add U X)) => min (add Z X) ;
+  if6220min false (add Z (add U X)) => min (add U X) ;
+  rm Z nil => nil ;
+  rm Z (add U X) => if6220rm (eq Z U) Z (add U X) ;
+  if6220rm true Z (add U X) => rm Z X ;
+  if6220rm false Z (add U X) => add U (rm Z X) ;
+  minsort nil nil => nil ;
+  minsort (add Z X) Y => if6220minsort (eq Z (min (add Z X))) (add Z X) Y ;
+  if6220minsort true (add Z X) Y => add Z (minsort (app (rm Z X) Y) nil) ;
+  if6220minsort false (add Z X) Y => minsort X (add Z Y)
 ]
 "
 
@@ -168,15 +198,37 @@ let print_pairs (i, exp) =
   "\n" ^ (Int.to_string i) ^ " := " ^
   Z3.Expr.to_string exp
 
+let coef_value_to_string value_map = function
+  | [(1, [name])] -> value_map name
+  | _ -> failwith "Error! Trying to print coefficient of wrong shape."
+
+
+  module Gen = Shape.Generator
 (* let () =
   Lists.print_list Z3.Expr.to_string p *)
 
 let () =
-  let open Monad.Option in
-  let this_shit = let* p in
-    Read_model.get_assigns p in
-  match this_shit  with
-  | None -> print_endline "none"
-  | Some lst ->
-    Lists.print_list print_pairs lst
+  match p with
+  | None -> print_endline "no solution"
+  | Some r ->
+    let coef_value =
+      Lists.map_from_assoc_list Int.equal r.model in
+    let value_map i =
+      coef_value i |> Z3.Expr.to_string in
+    let j_map = r.func_int in
+      List.iter
+      (fun f ->
+        print_endline (func_to_string f);
+        print_endline (
+          Gen.sat_shape_to_string
+            (coef_value_to_string value_map)
+            Gen.indet_to_string
+            (Tuple.saturate (j_map f)
+            (Gen.get_indims r.int_key f))
+        );
+        print_endline "\n"
+      ) (func_sylst ())
 
+let () =
+  Lists.print_list func_to_string
+  (Syntax.Trs.split_sig trs_data.trs |> fst)

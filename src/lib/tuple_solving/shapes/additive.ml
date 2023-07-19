@@ -1,11 +1,8 @@
 open Syntax.Term
 open Tuple
-
 open Affine
-
-(* open Monad *)
 module G = Generator
-(* module Tm = Syntax.Term *)
+open Generics
 
 (* Responsible for generating additive interpretations.
 An interpretatin shape will come an interpretation function
@@ -26,12 +23,6 @@ type config = {
   choice : int_choice
 }
 
-type ('a, 'b) additive = {
-  int_assoc : 'a;
-  asserts : 'b;
-  state : int
-}
-
 (*-----------------------------------------------------------------------------
   Generation of Interpretations
   ---------------------------------------------------------------------------*)
@@ -39,10 +30,10 @@ type ('a, 'b) additive = {
 (* Generates interpretations with the zero function in the cost component
   and an additive interpretation in the size component *)
 let gen_zero_cost_int (state : int) (int_key : sort -> int) (fn_list : func list) =
-  (G.gen_zero_cost_int int_key Affine.affine fn_list) state
+  (G.func_shapes_zero_cost int_key Affine.affine fn_list) state
 
 let gen_affine_int (state : int) (int_key : sort -> int) (fn_list : func list) =
-  (G.gen_func_int int_key Affine.affine fn_list) state
+  (G.func_shapes int_key Affine.affine fn_list) state
 
 (* generate an interpretation map based on a config provided *)
 let int_map cfg =
@@ -85,7 +76,7 @@ let additive_expr (int_key : sort -> int) func_int f =
   let indims = G.get_indims int_key f in
   let tpl = Tuple.saturate (func_int f) indims in
   match tpl with
-  | Cost (p, _), Size (Ret s) ->
+  | (p, s) ->
     (* Get the und. coefficients for cost *)
       let poly_cost = filter_poly p in
       let und_coefs_c = get_und_coef poly_cost in
@@ -97,7 +88,6 @@ let additive_expr (int_key : sort -> int) func_int f =
     let assertions_s = assert_le und_coefs_s in
       let open Monad.Utility(Monad.Reader (Z3env)) in
       rev_ListTransformerM (List.rev_append assertions_c assertions_s)
-  | _ -> exit 0
 
 let additive_exprs (int_key : sort -> int) func_int fns =
   let exprs = (List.map (additive_expr int_key func_int) fns) in
@@ -106,7 +96,7 @@ let additive_exprs (int_key : sort -> int) func_int fns =
           let* l = rev_ListTransformerM exprs in
             return (List.flatten l)
 
-let additive_int (cfg : config) =
+let additive_int (cfg : config) : shape_int =
   (* first we match on the choice of int *)
   let fn_cs,state = int_map cfg in
   let int_func = G.func_int fn_cs in
@@ -117,8 +107,6 @@ let additive_int (cfg : config) =
     asserts = ass_list;
     state = state
   }
-
-
 
 
 

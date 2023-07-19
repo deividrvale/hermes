@@ -20,6 +20,19 @@ let gener_v dim v sy =
                        (fun i -> [(C.one, [indet v i])]))) in
   c, s
 
+let coef_expr p =
+  let module R = Reader(Z3env) in
+  let open R in
+  let open Utility(R) in
+  let* adds =
+    rev_mapM
+      (fun (n, cs) ->
+         let* coef = mk_int_numeral n in
+         let* fcts = rev_mapM mk_int_const cs in
+         mk_mul (coef::fcts))
+      p in
+  mk_add adds
+
 let gener_r interp_f interp_v (lhs, rhs) =
   let rec interp = function
       Sym (F sy), _ ->
@@ -35,14 +48,7 @@ let gener_r interp_f interp_v (lhs, rhs) =
   let open R in
   let open Utility(R) in
   let coef_nonneg p =
-    let* adds =
-      rev_mapM
-        (fun (n, cs) ->
-           let* coef = mk_int_numeral n in
-           let* fcts = rev_mapM mk_int_const cs in
-           mk_mul (coef::fcts))
-        p in
-    let* e = mk_add adds in
+    let* e = coef_expr p in
     let* zero = mk_int_numeral 0 in
     mk_ge e zero in
   let poly_nonneg = rev_mapM (fun (c, _) -> coef_nonneg c) in

@@ -133,52 +133,22 @@ let rule = (lhs, rhs) *)
 (* Trying to do it from a file now. *)
 let file = "
 Signature: [
-  zero : di ;
-  add : di -> di -> di ;
-  app : di -> di -> di ;
-  eq : di -> di -> wg ;
-  false : wg ;
-  if6220min : wg -> di -> di ;
-  if6220minsort : wg -> di -> di -> di ;
-  if6220rm : wg -> di -> di -> di ;
-  le : di -> di -> wg ;
-  min : di -> di ;
-  minsort : di -> di -> di ;
-  nil : di ;
-  rm : di -> di -> di ;
-  s : di -> di ;
-  true : wg
+  zero : o ;
+  s : o -> o;
+  minus : o -> o -> o ;
+  quot : o -> o -> o
 ]
 
 Vars: [
-  X : di;
-  Y : di;
-  Z : di;
-  U : di
+  X : o;
+  Y : o
 ]
 
 Rules: [
-  eq zero zero => true ;
-  eq zero (s X) => false ;
-  eq (s X) zero => false ;
-  eq (s X) (s Y) => eq X Y ;
-  le zero Y => true ;
-  le (s X) zero => false ;
-  le (s X) (s Y) => le X Y ;
-  app nil Y => Y ;
-  app (add Z X) Y => add Z (app X Y) ;
-  min (add Z nil) => Z ;
-  min (add Z (add U X)) => if6220min (le Z U) (add Z (add U X)) ;
-  if6220min true (add Z (add U X)) => min (add Z X) ;
-  if6220min false (add Z (add U X)) => min (add U X) ;
-  rm Z nil => nil ;
-  rm Z (add U X) => if6220rm (eq Z U) Z (add U X) ;
-  if6220rm true Z (add U X) => rm Z X ;
-  if6220rm false Z (add U X) => add U (rm Z X) ;
-  minsort nil nil => nil ;
-  minsort (add Z X) Y => if6220minsort (eq Z (min (add Z X))) (add Z X) Y ;
-  if6220minsort true (add Z X) Y => add Z (minsort (app (rm Z X) Y) nil) ;
-  if6220minsort false (add Z X) Y => minsort X (add Z Y)
+  minus X zero => X ;
+  minus (s X) (s Y) => minus X Y ;
+  quot zero (s Y) => zero ;
+  quot (s X) (s Y) => s (quot (minus X Y) (s Y))
 ]
 "
 
@@ -190,7 +160,7 @@ let parsed_file =
 
 let trs_data = File.Onijn.process_file parsed_file
 
-let p = Strat.Progressive.progressive trs_data
+let p = Strat.Manager.run_strat trs_data
 
 (* let exp = p.asserts (Z3env.mk_env []) |> List.flatten *)
 

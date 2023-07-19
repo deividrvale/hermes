@@ -14,12 +14,15 @@ open Tuple
 module File = File.Onijn
 module Ctr = Constraints
 module Additive = Shape.Additive
+module Linear = Shape.Linear
+module Qua = Shape.Qua
 module Gen = Shape.Generator
 open Generics
 
 (* Set the config type *)
 let set_config state int_key fn_list choice =
-  let open Shape.Additive in
+  let open Additive in
+  let open Shape.Generics in
   let int_key = Fun.const int_key in
   {
     state = state;
@@ -28,17 +31,26 @@ let set_config state int_key fn_list choice =
     choice = choice
   }
 
-(* One step of the progressive strategy *)
-let progressive_one_step (data : File.trs_data) int_key =
+let select_shape = function
+  | ADD -> Additive.additive_int
+  | LIN -> Linear.linear_int
+  | QUA -> Qua.quadratic_int
 
+(* One step of the progressive strategy *)
+let progressive_one_step shape (data : File.trs_data) int_key =
+
+  (* Select the shape functions to interpret function symbols *)
+  let interpret = select_shape shape in
   (* <debug> *)
   let () =
-    print_endline ("one step executed on " ^ Int.to_string int_key)
+    print_endline ("Progressive Strategy on dimension " ^ Int.to_string int_key)
   in
 
   let splitted_sig = split_sig data.trs in
   (* Interpretation phase -------------------------------------------------- *)
-  (* Interpret Constructors *)
+  (* Interpret Constructors.
+    Constructors will be additive.
+    So we don't respect the choice given as argument for them. *)
   let ctrs_config =
     set_config 0 int_key (splitted_sig |> fst) Additive.ZeroCost in
   let ctrs = Additive.additive_int ctrs_config in
@@ -49,7 +61,7 @@ let progressive_one_step (data : File.trs_data) int_key =
     of names *)
   let def_config =
     set_config ctrs.state int_key (splitted_sig |> snd) Additive.CostSize in
-  let def = Additive.additive_int def_config in
+  let def = interpret def_config in
 
   (* Combination phase ----------------------------------------------------- *)
   (* Combine the results from interpreting constructors
@@ -59,6 +71,18 @@ let progressive_one_step (data : File.trs_data) int_key =
     Gen.func_int (List.rev_append ctrs.int_assoc def.int_assoc) in
   let valuation =
     Gen.var_int ctrs_config.int_key in
+
+  (* <debug> print the interpretation shapes found *)
+  let () =
+    print_endline "Interpretation Shapes Produced -----";
+    List.iter
+    ( fun f ->
+      print_endline (func_to_string f);
+        Gen.print_sat_shape
+          (Tuple.saturate (j_map f) (Gen.get_indims def_config.int_key f))
+    ) (func_sylst ());
+    print_endline "----------\n"
+  in
 
   (* Assertions collection phase ------------------------------------------- *)
   (* The first assertions set all undeterminate coefficients of the
@@ -93,17 +117,17 @@ let progressive_one_step (data : File.trs_data) int_key =
       model = l
     }
 
-let progressive data =
+let progressive shape data =
   (* Get General Hermes Config *)
   let hermes_cfg = Config.get_config () in
   let max_ty_dim = hermes_cfg.tuples.type_dim in
   let rec progressive_aux run_index =
     if run_index <= max_ty_dim then
       begin
-        match progressive_one_step data run_index with
+        match progressive_one_step shape data run_index with
         | None ->
           let () =
-            print_endline ("failed dim: " ^ Int.to_string run_index)
+            print_endline ("\n failed on :" ^ Int.to_string run_index)
           in
           progressive_aux (run_index + 1)
         | Some sol ->
@@ -118,3 +142,4 @@ let progressive data =
       end
   in
   progressive_aux 1
+

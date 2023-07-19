@@ -7,9 +7,8 @@ module File = File.Onijn
 module Ctr = Constraints
 module Additive = Shape.Additive
 module Gen = Shape.Generator
+open Generics
 
-type strat_result = {
-  int_key : sort -> int;
-  func_int : func -> cost * size;
-  model : Z3.Model.model option
-}
+
+let run_strat data =
+  Progressive.progressive QUA data

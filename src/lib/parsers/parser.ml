@@ -33,15 +33,13 @@ end = struct
     try parser lexer lexbuf with
     | P.SyntaxError msg ->
       Printf.fprintf stderr "%a: %s.\n" print_pos lexbuf msg;
-      exit (-1)
+      exit 1
     | P.Error ->
       Printf.fprintf stderr "\nCould not parse string: syntax error at %a \n" print_pos lexbuf;
-      exit (-1)
+      exit 1
 
   let parse_from_string parser lexer (s : string) =
     let lexbuf = Lexing.from_string s in
     parse_with_error parser lexer lexbuf
-
-  (* let parse_from_file parser lexer () *)
 
 end

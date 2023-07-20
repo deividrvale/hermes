@@ -1,7 +1,7 @@
 (** This module provides abstract interfacing for parsing input files.
 
     {b Note:}
-    Each new file format added to {b onijn} is a concrete implementation of
+    Each new file format added to {b hermes} is a concrete implementation of
     this abstract interfacing.
 *)
 

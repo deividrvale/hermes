@@ -1,5 +1,4 @@
 open Syntax.Term
-
 module StringSet = Set.Make (String)
 
 (*-----------------------------------------------------------------------------
@@ -7,9 +6,12 @@ module StringSet = Set.Make (String)
   ---------------------------------------------------------------------------*)
 let symbolize_err symb =
   let msg =
-"The name " ^ symb ^ " is duplicated in the input file.\n\
-Please note that the declarations for the signature and variables must be unique
-as two function symbols (and variables) cannot have different types." in
+    "The name " ^ symb
+    ^ " is duplicated in the input file.\n\
+       Please note that the declarations for the signature and variables must \
+       be unique\n\
+       as two function symbols (and variables) cannot have different types."
+  in
   print_string msg;
   exit 1
 
@@ -23,21 +25,9 @@ as two function symbols (and variables) cannot have different types." in
 *)
 type fakeTy = Name of string | Arr of fakeTy * fakeTy
 
-let rec names_of_fakeTy = function
-  | Name x -> StringSet.singleton x
-  | Arr (fake1, fake2) ->
-      StringSet.union (names_of_fakeTy fake1) (names_of_fakeTy fake2)
-
 let rec fakeTy_to_string = function
   | Name s -> s
   | Arr (a, b) -> "(" ^ fakeTy_to_string a ^ "->" ^ fakeTy_to_string b ^ ")"
-
-let rec fake_ty_equal x y =
-  match (x, y) with
-  | Name _, Arr _ -> false
-  | Arr _, Name _ -> false
-  | Name n, Name m -> String.equal n m
-  | Arr (a1, b1), Arr (a2, b2) -> fake_ty_equal a1 a2 && fake_ty_equal b1 b2
 
 let rec args_of_fakeTy = function
   | Name _ -> []
@@ -114,15 +104,8 @@ let to_trs (trs : trs) =
 (*-----------------------------------------------------------------------------
     File
   ---------------------------------------------------------------------------*)
-type parsed_file = {
-  ar : signature;
-  var : environment;
-  rules : trs
-}
-
-type trs_data = {
-  trs : (term * term) list
-}
+type parsed_file = { ar : signature; var : environment; rules : trs }
+type trs_data = { trs : (term * term) list }
 
 let parsed_file_mk ar var rules = { ar; var; rules }
 

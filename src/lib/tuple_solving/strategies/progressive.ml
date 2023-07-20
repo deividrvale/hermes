@@ -6,10 +6,7 @@
   Each iteration we generate interpretation shapes
   and try to solve for the rule orientations.
 *)
-
-open Syntax.Term
 open Syntax.Trs
-open Tuple
 
 module File = File.Onijn
 module Ctr = Constraints
@@ -21,7 +18,6 @@ open Generics
 
 (* Set the config type *)
 let set_config state int_key fn_list choice =
-  let open Additive in
   let open Shape.Generics in
   let int_key = Fun.const int_key in
   {

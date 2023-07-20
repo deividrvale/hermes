@@ -1,5 +1,4 @@
 open Syntax.Term
-open Syntax.Trs
 open Tuple
 
 (** Generation of generic interpretation shapes.

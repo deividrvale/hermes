@@ -1,6 +1,4 @@
 open Syntax.Term
-open Syntax.Trs
-open Config
 open Monad
 open Tuple
 module G = Gener

@@ -129,6 +129,10 @@ val pp_print_symb : formatter -> sym -> unit
 
 val print_symb : sym -> unit
 
+val pp_print_typ : formatter -> typ -> unit
+
+val print_type : typ -> unit
+
 val pp_print_term : formatter -> term -> unit
 
 val print_term : term -> unit

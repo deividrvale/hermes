@@ -14,7 +14,6 @@
 %token SIG_ID
 %token VAR_ID
 %token RULE_ID
-%token HAS_TYPE
 
 %token COLON
 

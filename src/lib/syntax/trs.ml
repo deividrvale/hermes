@@ -4,7 +4,7 @@ open Term
   [is_sublist eq xs ys] is whether [xs] is a sublist of [ys],
   with [eq] used as equality operator.
 *)
-let rec is_sublist eq (xs : 'a list) (ys : 'a list) : bool =
+let is_sublist eq (xs : 'a list) (ys : 'a list) : bool =
   List.for_all (fun x -> List.exists (eq x) ys) xs
 
 type rule = term * term

@@ -1,5 +1,3 @@
-open Syntax.Term
-open Tuple
 module Gen = Generator
 include Generics
 

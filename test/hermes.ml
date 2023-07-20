@@ -166,9 +166,9 @@ let p = Strat.Manager.run_strat trs_data
 
 (* let exp = p.asserts (Z3env.mk_env []) |> List.flatten *)
 
-let print_pairs (i, exp) =
+(* let print_pairs (i, exp) =
   "\n" ^ (Int.to_string i) ^ " := " ^
-  Z3.Expr.to_string exp
+  Z3.Expr.to_string exp *)
 
 let coef_value_to_string value_map = function
   | [(1, [name])] -> value_map name

@@ -1,4 +1,3 @@
 (library
  (name config)
- (public_name hermes.config)
  (libraries ))

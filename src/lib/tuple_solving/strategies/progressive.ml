@@ -143,4 +143,3 @@ let progressive shape data =
       end
   in
   progressive_aux 1
-

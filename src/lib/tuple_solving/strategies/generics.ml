@@ -8,10 +8,6 @@ let shape_to_string = function
   | AFF -> "AFFINE"
   | QUA -> "QUADRATIC"
 
-type strategy_config = {
-  shape : shape;
-}
-
 type strategy_result = {
   int_key : sort -> int;
   func_int : func -> cost * size;

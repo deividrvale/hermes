@@ -59,7 +59,6 @@ let () =
       Arg.usage spec_list usage_msg;
       exit 1
   | _ ->
-      let config = Config.get_config () in
       print_string "Running Hermes with Default settings.";
       print_endline "\n\nProcessing file: ";
       Lists.print_list Fun.id !input_files;
@@ -67,6 +66,8 @@ let () =
       List.iter
         (fun x ->
           let input = Io.get_file_content x in
-          let _ = Prove.get_data input in
-          print_string input)
-        !input_files
+          let data = Prove.get_data input in
+          print_string input;
+          let p = Strat.Manager.run_strat data in
+          Prove.tuple_prove p
+        ) !input_files

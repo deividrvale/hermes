@@ -70,6 +70,19 @@ let get_und_coef poly =
 let assert_le unds =
   List.map (fun name -> Gener.undet_le name 1) unds
 
+(* Generate the list of expressions for the definition of additive in the
+   size component. *)
+let sum_stms (size : P.t list) =
+  let sum = List.fold_left P.add P.zero size |> simpl in
+  let module R = Monad.Reader(Z3env) in
+  let open R in
+  let open Monad.Utility(R) in
+  let coef_nonneg coef =
+    let* one = Z3env.mk_int_numeral 1 in
+    let* coef_expr = Gener.coef_expr coef in
+      Z3env.mk_ge one coef_expr in
+  rev_mapM (fun (coef, _) -> coef_nonneg coef) sum
+
 (* Generate the constraints over the undeterminate coefficients *)
 let additive_expr (int_key : sort -> int) func_int f =
   let indims = Gen.get_indims int_key f in
@@ -82,18 +95,23 @@ let additive_expr (int_key : sort -> int) func_int f =
     (* Get the und. coefficients for size *)
       let poly_size = filter_size s in
       let und_coefs_s = get_und_coef poly_size in
+    (* Get the additive restriction on the sum of all size components *)
     (* Generate the list of expressions for cost and size *)
     let assertions_c = assert_le und_coefs_c in
     let assertions_s = assert_le und_coefs_s in
       let open Monad.Utility(Monad.Reader (Z3env)) in
-      rev_ListTransformerM (List.rev_append assertions_c assertions_s)
+      let open Monad.Reader(Z3env) in
+      let* l1 =
+        rev_ListTransformerM (List.rev_append assertions_c assertions_s) in
+      let* l2 = sum_stms s
+  in return (List.rev_append l1 l2)
 
 let additive_exprs (int_key : sort -> int) func_int fns =
   let exprs = (List.map (additive_expr int_key func_int) fns) in
       let open Monad.Utility(Monad.Reader (Z3env)) in
-        let open Monad.Reader(Z3env) in
-          let* l = rev_ListTransformerM exprs in
-            return (List.flatten l)
+      let open Monad.Reader(Z3env) in
+        let* l = rev_ListTransformerM exprs in
+        return (List.flatten l)
 
 let additive_int (cfg : shape_config) : shape_int =
   (* first we match on the choice of int *)

@@ -174,10 +174,7 @@ let coef_value_to_string value_map = function
   | [(1, [name])] -> value_map name
   | _ -> failwith "Error! Trying to print coefficient of wrong shape."
 
-
-  module Gen = Shape.Generator
-(* let () =
-  Lists.print_list Z3.Expr.to_string p *)
+module Gen = Shape.Generator
 
 let () =
   match p with

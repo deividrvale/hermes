@@ -66,7 +66,7 @@ let config = {
   technique = TUPLE;
   solver = Z3;
   tuples = {
-    type_dim = 1;
+    type_dim = 3;
     param_int = (0,2);
     poly_deg = 2
   }

@@ -33,7 +33,7 @@ let set_config state int_key fn_list choice =
 
 let select_shape = function
   | ADD -> Additive.additive_int
-  | LIN -> Linear.linear_int
+  | AFF -> Linear.linear_int
   | QUA -> Qua.quadratic_int
 
 (* One step of the progressive strategy *)
@@ -43,7 +43,8 @@ let progressive_one_step shape (data : File.trs_data) int_key =
   let interpret = select_shape shape in
   (* <debug> *)
   let () =
-    print_endline ("Progressive Strategy on dimension " ^ Int.to_string int_key)
+    print_endline ("Progressive Strategy on dimension " ^ Int.to_string int_key);
+    print_endline ("Interpretation shape choosen: " ^ shape_to_string shape)
   in
 
   let splitted_sig = split_sig data.trs in
@@ -73,7 +74,7 @@ let progressive_one_step shape (data : File.trs_data) int_key =
     Gen.var_int ctrs_config.int_key in
 
   (* <debug> print the interpretation shapes found *)
-  let () =
+  (* let () =
     print_endline "Interpretation Shapes Produced -----";
     List.iter
     ( fun f ->
@@ -82,7 +83,7 @@ let progressive_one_step shape (data : File.trs_data) int_key =
           (Tuple.saturate (j_map f) (Gen.get_indims def_config.int_key f))
     ) (func_sylst ());
     print_endline "----------\n"
-  in
+  in *)
 
   (* Assertions collection phase ------------------------------------------- *)
   (* The first assertions set all undeterminate coefficients of the

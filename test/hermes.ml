@@ -134,9 +134,9 @@ let rule = (lhs, rhs) *)
 let file = "
 Signature: [
   zero : o ;
-  s : o -> o;
-  minus : o -> o -> o ;
-  quot : o -> o -> o
+  plus : o -> o -> o ;
+  s : o -> o ;
+  times : o -> o -> o
 ]
 
 Vars: [
@@ -145,10 +145,12 @@ Vars: [
 ]
 
 Rules: [
-  minus X zero => X ;
-  minus (s X) (s Y) => minus X Y ;
-  quot zero (s Y) => zero ;
-  quot (s X) (s Y) => s (quot (minus X Y) (s Y))
+  times X zero => zero ;
+  times X (s Y) => plus (times X Y) X ;
+  plus X zero => X ;
+  plus zero X => X ;
+  plus X (s Y) => s (plus X Y) ;
+  plus (s X) Y => s (plus X Y)
 ]
 "
 

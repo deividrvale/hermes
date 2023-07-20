@@ -1,7 +1,12 @@
 open Syntax.Term
 open Tuple
 
-type shape = ADD | LIN | QUA
+type shape = ADD | AFF | QUA
+
+let shape_to_string = function
+  | ADD -> "ADDITIVE"
+  | AFF -> "AFFINE"
+  | QUA -> "QUADRATIC"
 
 type strategy_config = {
   shape : shape;

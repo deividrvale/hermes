@@ -39,8 +39,10 @@ let progressive_one_step shape (data : File.trs_data) int_key =
   let interpret = select_shape shape in
   (* <debug> *)
   let () =
-    print_endline ("Progressive Strategy on dimension " ^ Int.to_string int_key);
-    print_endline ("Interpretation shape choosen: " ^ shape_to_string shape)
+    print_endline
+    ("Progressive Strategy on dimension " ^ Int.to_string int_key);
+    print_endline
+    ("Interpretation shape choosen: " ^ shape_to_string shape)
   in
 
   let splitted_sig = split_sig data.trs in
@@ -124,12 +126,13 @@ let progressive shape data =
         match progressive_one_step shape data run_index with
         | None ->
           let () =
-            print_endline ("\n failed on :" ^ Int.to_string run_index)
+            print_endline ("Interpretation not found. \n")
           in
           progressive_aux (run_index + 1)
         | Some sol ->
           let () =
-            print_endline ("sucessive step: " ^ Int.to_string run_index)
+            print_newline ();
+            print_string ("Tuple Interpretation found. ");
           in
           Some sol
       end

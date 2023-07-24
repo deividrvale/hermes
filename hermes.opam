@@ -4,7 +4,6 @@ version: "1.0.0"
 synopsis: "A first-order rewriting termination and complexity analyzer."
 description: """
 Hermes is a first-order rewriting termination and complexity analyzer
-
  for term rewriting systems with innermost rewriting strategy."""
 maintainer: ["Deivid Vale" "Liye Guo"]
 authors: ["Deivid Vale" "Liye Guo"]

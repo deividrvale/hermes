@@ -1,3 +1,4 @@
 (library
  (name z3env)
+ (public_name hermes.z3env)
  (libraries z3))

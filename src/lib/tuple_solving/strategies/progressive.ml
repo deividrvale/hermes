@@ -137,8 +137,6 @@ let progressive shape data =
           Some sol
       end
     else
-      begin
         None
-      end
   in
   progressive_aux 1

@@ -15,6 +15,7 @@ let z3_env = Z3env.mk_env []
 let get_model exprs =
   (let open Monad.Reader(Z3env) in
     let* exprs = exprs in
+      print_endline "Checking for Z3 model of constraints...";
       Z3env.check_for_model exprs) z3_env
 
 let check_model_existence model =
@@ -24,6 +25,10 @@ let check_model_existence model =
         get_assigns model
   in
   match result with
-  | None -> None
-  | Some [] -> None
+  | None ->
+    print_endline "Z3 model doesn't exist.";
+    None
+  | Some [] ->
+    print_endline "Z3 model doesn't exist.";
+    None
   | Some l -> Some l

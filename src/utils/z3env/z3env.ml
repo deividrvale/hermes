@@ -26,5 +26,26 @@ let mk_ge t1 t2 { context; _ } =
 let check_for_model assertions { solver; _ } =
   let open Solver in
   reset solver;
-  ignore (check solver assertions);
-  get_model solver
+  let check_status = check solver assertions in
+  (* Note:
+    verbosily printing the status of Z3 checking step in the stdoutput.
+    This is specially usefull for debugging.
+  *)
+  let () = begin
+    match check_status with
+    | UNSATISFIABLE ->
+      print_endline
+      ("Z3 check of constraints is " ^ string_of_status UNSATISFIABLE)
+    | UNKNOWN ->
+      print_endline
+      ("Z3 check of constraints is " ^ string_of_status UNKNOWN)
+    | SATISFIABLE ->
+      print_endline
+      ("Z3 check of constraints is " ^ string_of_status SATISFIABLE)
+    end
+  in
+  match check solver assertions with
+  | SATISFIABLE ->
+    get_model solver
+  | _ ->
+    None

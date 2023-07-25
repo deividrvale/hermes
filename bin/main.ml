@@ -2,14 +2,13 @@ let usage_msg =
   "usage: hermes <path/to/input/file>"
 
 let version_msg =
-  "The Hermes rewriting complexity static analysis tool, version 1.0.0\nThis version is used in the paper \"Rewriting Complexity Analysis through Tuple Interpretations\" by Deivid Vale and Liye Guo."
+  "The Hermes rewriting complexity static analysis tool, version 1.0.0\nThis version is used in the paper \"Rewriting Complexity Analysis through Tuple Interpretations\" by Liye Guo and Deivid Vale."
 
 let print_version () =
   print_endline version_msg;
   exit 0
 
 let input_files : string list ref = ref []
-let output_file = ref ""
 let anon_cmd filename = input_files := filename :: !input_files
 
 let spec_list =

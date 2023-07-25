@@ -2,7 +2,7 @@ FROM ocaml/opam:ubuntu-22.04-ocaml-5.2
 
 USER root
 RUN apt-get -y update
-RUN apt-get install -y sudo
+RUN apt-get install -y sudo python3 libgmp-dev
 RUN adduser --disabled-password --gecos '' hermes
 RUN adduser hermes sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
@@ -14,9 +14,6 @@ WORKDIR ${HOME}
 
 RUN opam init --disable-sandboxing --yes
 RUN eval $(opam env)
-
-USER root
-RUN apt-get install -y python3 libgmp-dev
 
 USER hermes
 RUN opam install dune menhir z3

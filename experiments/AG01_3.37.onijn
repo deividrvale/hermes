@@ -1,0 +1,23 @@
+
+Signature: [
+  zero : ma ;
+  evenodd : ma -> ma -> qa ;
+  false : qa ;
+  not : qa -> qa ;
+  s : ma -> ma ;
+  true : qa
+]
+
+Vars: [
+  X : ma
+]
+
+
+Rules: [
+  not true => false ;
+  not false => true ;
+  evenodd X zero => not (evenodd X (s zero)) ;
+  evenodd zero (s zero) => false ;
+  evenodd (s X) (s zero) => evenodd X zero
+]
+

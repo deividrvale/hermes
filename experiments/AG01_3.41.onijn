@@ -1,0 +1,17 @@
+Signature: [
+  zero : o ;
+  fac : o -> o ;
+  p : o -> o ;
+  s : o -> o ;
+  times : o -> o -> o
+]
+
+Vars: [
+  X : o
+]
+
+Rules: [
+  p (s X) => X ;
+  fac zero => s zero ;
+  fac (s X) => times (s X) (fac (p (s X)))
+]

@@ -1,0 +1,24 @@
+Signature: [
+  zero : nb ;
+  cons : ob -> nb -> ob ;
+  conv : nb -> ob ;
+  half : nb -> nb ;
+  lastbit : nb -> nb ;
+  nil : ob ;
+  s : nb -> nb
+]
+
+Vars: [
+  X : nb
+]
+
+Rules: [
+  half zero => zero ;
+  half (s zero) => zero ;
+  half (s (s X)) => s (half X) ;
+  lastbit zero => zero ;
+  lastbit (s zero) => s zero ;
+  lastbit (s (s X)) => lastbit X ;
+  conv zero => cons nil zero ;
+  conv (s X) => cons (conv (half (s X))) (lastbit (s X))
+]

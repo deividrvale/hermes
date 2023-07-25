@@ -1,0 +1,33 @@
+
+Signature: [
+  zero : yd ;
+  false : tc ;
+  gcd : yd -> yd -> yd ;
+  if6220gcd : tc -> yd -> yd -> yd ;
+  if6220minus : tc -> yd -> yd -> yd ;
+  le : yd -> yd -> tc ;
+  minus : yd -> yd -> yd ;
+  s : yd -> yd ;
+  true : tc
+]
+
+Vars: [
+  X : yd;
+  Y : yd
+]
+
+Rules: [
+  le zero X => true ;
+  le (s Y) zero => false ;
+  le (s Y) (s X) => le Y X ;
+  minus zero X => zero ;
+  minus (s Y) X => if6220minus (le (s Y) X) (s Y) X ;
+  if6220minus true (s Y) X => zero ;
+  if6220minus false (s Y) X => s (minus Y X) ;
+  gcd zero X => X ;
+  gcd (s Y) zero => s Y ;
+  gcd (s Y) (s X) => if6220gcd (le X Y) (s Y) (s X) ;
+  if6220gcd true (s Y) (s X) => gcd (minus Y X) (s X) ;
+  if6220gcd false (s Y) (s X) => gcd (minus X Y) (s Y)
+]
+

@@ -1,0 +1,19 @@
+
+Signature: [
+  f : qa -> qa ;
+  g : qa -> qa ;
+  p : qa -> ra ;
+  q : qa -> ra
+]
+
+Vars: [
+  X : qa
+]
+
+Rules: [
+  p (f (f X)) => q (f (g X)) ;
+  p (g (g X)) => q (g (f X)) ;
+  q (f (f X)) => p (f (g X)) ;
+  q (g (g X)) => p (g (f X))
+]
+

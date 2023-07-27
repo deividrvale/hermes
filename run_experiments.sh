@@ -6,7 +6,7 @@ RED='\033[1;31m'
 GREEN='\033[1;32m'
 NC='\033[0m'
 
-EXP_PATH="./experiments/"
+EXP_PATH="./benchmarks"
 
 # Execute onijn on experiment data and generate the corresponding Coq certificates.
 FILES="$EXP_PATH/*"

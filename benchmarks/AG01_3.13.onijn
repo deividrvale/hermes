@@ -1,0 +1,41 @@
+Signature: [
+  zero : cg ;
+  edge : cg -> cg -> bg -> bg ;
+  empty : bg ;
+  eq : cg -> cg -> cg ;
+  false : cg ;
+  ifa : cg -> cg -> cg -> bg -> bg -> cg ;
+  ifb : cg -> cg -> cg -> bg -> bg -> cg ;
+  or : cg -> cg -> cg ;
+  reach : cg -> cg -> bg -> bg -> cg ;
+  s : cg -> cg ;
+  true : cg ;
+  union : bg -> bg -> bg
+]
+
+Vars: [
+  X : cg;
+  Y : cg;
+  Z : bg;
+  U : bg;
+  V : cg;
+  W : cg
+]
+
+Rules: [
+  eq zero zero => true ;
+  eq zero (s X) => false ;
+  eq (s X) zero => false ;
+  eq (s X) (s Y) => eq X Y ;
+  or true Y => true ;
+  or false Y => Y ;
+  union empty Z => Z ;
+  union (edge X Y U) Z => edge X Y (union U Z) ;
+  reach X Y empty Z => false ;
+  reach X Y (edge V W U) Z => ifa (eq X V) X Y (edge V W U) Z ;
+  ifa true X Y (edge V W U) Z => ifb (eq Y W) X Y (edge V W U) Z ;
+  ifb true X Y (edge V W U) Z => true ;
+  ifb false X Y (edge V W U) Z => or (reach X Y U Z) (reach W Y (union U Z) empty) ;
+  ifa false X Y (edge V W U) Z => reach X Y U (edge V W Z)
+]
+

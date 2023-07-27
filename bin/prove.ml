@@ -15,7 +15,8 @@ let tuple_prove (data : strategy_result option) =
   match data with
   | None ->
       print_endline
-        "No tuple interpretation over the natural numbers could be found."
+      "No tuple interpretation over the natural numbers could be found.";
+      exit 1
   | Some r ->
       let () =
         print_endline

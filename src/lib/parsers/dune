@@ -1,0 +1,3 @@
+(library
+ (name parser)
+ (public_name hermes.parser))

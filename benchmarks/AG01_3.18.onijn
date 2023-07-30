@@ -1,0 +1,25 @@
+
+Signature: [
+  zero : o ;
+  double : o -> o ;
+  minus : o -> o -> o ;
+  plus : o -> o -> o ;
+  s : o -> o
+]
+
+Vars: [
+  X : o;
+  Y : o
+]
+
+Rules: [
+  minus X zero => X ;
+  minus (s X) (s Y) => minus X Y ;
+  double zero => zero ;
+  double (s X) => s (s (double X)) ;
+  plus zero Y => Y ;
+  plus (s X) Y => s (plus X Y) ;
+  plus (s X) Y => plus X (s Y) ;
+  plus (s X) Y => s (plus (minus X Y) (double Y))
+]
+

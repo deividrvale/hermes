@@ -1,0 +1,19 @@
+Signature: [
+    zero : nat;
+    s : nat -> nat;
+    minus : nat -> nat -> nat;
+    quot : nat -> nat -> nat
+]
+
+Vars: [
+    x : nat;
+    y : nat
+]
+
+Rules: [
+    minus x zero => x;
+    minus zero y => zero;
+    minus (s x) (s y) => minus x y;
+    quot zero (s y) => zero;
+    quot (s x) (s y) => s (quot (minus x y) (s y))
+]

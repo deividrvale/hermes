@@ -1,0 +1,20 @@
+Signature: [
+  zero : o ;
+  minus : o -> o -> o ;
+  pred : o -> o ;
+  quot : o -> o -> o ;
+  s : o -> o
+]
+
+Vars: [
+  X : o;
+  Y : o
+]
+
+Rules: [
+  pred (s X) => X ;
+  minus X zero => X ;
+  minus X (s Y) => pred (minus X Y) ;
+  quot zero (s Y) => zero ;
+  quot (s X) (s Y) => s (quot (minus X Y) (s Y))
+]

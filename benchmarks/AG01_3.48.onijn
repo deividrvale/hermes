@@ -1,0 +1,28 @@
+
+Signature: [
+  zero : wb ;
+  one : wb ;
+  c : wb -> wb ;
+  f : wb -> nb ;
+  false : nb ;
+  g : wb -> wb -> wb ;
+  if : nb -> wb -> wb -> wb ;
+  s : wb -> wb ;
+  true : nb
+]
+
+Vars: [
+  X : wb;
+  Y : wb
+]
+
+Rules: [
+  f zero => true ;
+  f one => false ;
+  f (s X) => f X ;
+  if true (s X) (s Y) => s X ;
+  if false (s X) (s Y) => s Y ;
+  g X (c Y) => c (g X Y) ;
+  g X (c Y) => g X (if (f X) (c (g (s X) Y)) (c Y))
+]
+

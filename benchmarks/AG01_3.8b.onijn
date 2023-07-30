@@ -1,0 +1,30 @@
+Signature: [
+  zero : id ;
+  false : ab ;
+  if6220minus : ab -> id -> id -> id ;
+  le : id -> id -> ab ;
+  log : id -> id ;
+  minus : id -> id -> id ;
+  quot : id -> id -> id ;
+  s : id -> id ;
+  true : ab
+]
+
+Vars: [
+  X : id;
+  Y : id
+]
+
+Rules: [
+  le zero X => true ;
+  le (s Y) zero => false ;
+  le (s Y) (s X) => le Y X ;
+  minus zero X => zero ;
+  minus (s Y) X => if6220minus (le (s Y) X) (s Y) X ;
+  if6220minus true (s Y) X => zero ;
+  if6220minus false (s Y) X => s (minus Y X) ;
+  quot zero (s X) => zero ;
+  quot (s Y) (s X) => s (quot (minus Y X) (s X)) ;
+  log (s zero) => zero ;
+  log (s (s Y)) => s (log (s (quot Y (s (s zero)))))
+]

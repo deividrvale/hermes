@@ -1,0 +1,26 @@
+Signature: [
+  zero : ab ;
+  cons : ab -> rb -> rb ;
+  nil : rb ;
+  rev : rb -> rb ;
+  rev1 : ab -> rb -> ab ;
+  rev2 : ab -> rb -> rb ;
+  s : ab -> ab
+]
+
+Vars: [
+  X : ab;
+  Y : rb;
+  Z : ab
+]
+
+Rules: [
+  rev nil => nil ;
+  rev (cons X Y) => cons (rev1 X Y) (rev2 X Y) ;
+  rev1 zero nil => zero ;
+  rev1 (s X) nil => s X ;
+  rev1 X (cons Z Y) => rev1 Z Y ;
+  rev2 X nil => nil ;
+  rev2 X (cons Z Y) => rev (cons X (rev2 Z Y))
+]
+

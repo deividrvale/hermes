@@ -1,0 +1,46 @@
+Signature: [
+  zero : ze ;
+  add : lb -> ze -> ze ;
+  app : ze -> ze -> ze ;
+  concat : ze -> ze -> ze ;
+  cons : ze -> ze -> ze ;
+  false : af ;
+  leaf : ze ;
+  lessA : ze -> ze -> af ;
+  minus : ze -> ze -> ze ;
+  nil : ze ;
+  quot : ze -> ze -> ze ;
+  reverse : ze -> ze ;
+  s : ze -> ze ;
+  shuffle : ze -> ze ;
+  true : af
+]
+
+Vars: [
+  X : ze;
+  Y : ze;
+  Z : lb;
+  U : ze;
+  V : ze;
+  W : ze;
+  Q : ze
+]
+
+Rules: [
+  minus X zero => X ;
+  minus (s X) (s Y) => minus X Y ;
+  quot zero (s Y) => zero ;
+  quot (s X) (s Y) => s (quot (minus X Y) (s Y)) ;
+  app nil Y => Y ;
+  app (add Z X) Y => add Z (app X Y) ;
+  reverse nil => nil ;
+  reverse (add Z X) => app (reverse X) (add Z nil) ;
+  shuffle nil => nil ;
+  shuffle (add Z X) => add Z (shuffle (reverse X)) ;
+  concat leaf Y => Y ;
+  concat (cons U V) Y => cons U (concat V Y) ;
+  lessA X leaf => false ;
+  lessA leaf (cons W Q) => true ;
+  lessA (cons U V) (cons W Q) => lessA (concat U V) (concat W Q)
+]
+

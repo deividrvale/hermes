@@ -1,0 +1,18 @@
+
+Signature: [
+  zero : o ;
+  one : o ;
+  f : o -> o -> o -> o ;
+  s : o -> o
+]
+
+Vars: [
+  X : o;
+  Y : o;
+  Z : o
+]
+
+Rules: [
+  f zero one X => f (s X) X X ;
+  f X Y (s Z) => s (f zero one Z)
+]

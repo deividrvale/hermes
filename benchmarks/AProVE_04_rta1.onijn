@@ -1,0 +1,21 @@
+Signature: [
+  zero : o ;
+  ack : o -> o -> o ;
+  plus : o -> o -> o ;
+  s : o -> o
+]
+
+Vars: [
+  X : o;
+  Y : o
+]
+
+Rules: [
+  plus (s (s X)) Y => s (plus X (s Y)) ;
+  plus X (s (s Y)) => s (plus (s X) Y) ;
+  plus (s zero) Y => s Y ;
+  plus zero Y => Y ;
+  ack zero Y => s Y ;
+  ack (s X) zero => ack X (s zero) ;
+  ack (s X) (s Y) => ack X (plus Y (ack (s X) Y))
+]

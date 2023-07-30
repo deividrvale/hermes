@@ -1,0 +1,12 @@
+Signature: [
+    a : word -> word;
+    b : word -> word
+]
+
+Vars : [
+    x : word
+]
+
+Rules: [
+    a (b x) => b (a x)
+]

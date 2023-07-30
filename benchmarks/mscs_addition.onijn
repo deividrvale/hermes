@@ -1,0 +1,15 @@
+Signature: [
+  zero : nat;
+  suc : nat -> nat;
+  add : nat -> nat -> nat
+]
+
+Vars: [
+  x : nat;
+  y : nat
+]
+
+Rules: [
+  add x zero => x;
+  add x (suc y) => suc (add x y)
+]

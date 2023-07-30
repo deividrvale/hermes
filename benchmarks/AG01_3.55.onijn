@@ -1,0 +1,46 @@
+Signature: [
+  zero : zg ;
+  add : zg -> zg -> zg ;
+  app : zg -> zg -> zg ;
+  false : df ;
+  high : zg -> zg -> zg ;
+  if6220high : df -> zg -> zg -> zg ;
+  if6220low : df -> zg -> zg -> zg ;
+  le : zg -> zg -> df ;
+  low : zg -> zg -> zg ;
+  minus : zg -> zg -> zg ;
+  nil : zg ;
+  quicksort : zg -> zg ;
+  quot : zg -> zg -> zg ;
+  s : zg -> zg ;
+  true : df
+]
+
+Vars: [
+  X : zg;
+  Y : zg;
+  Z : zg;
+  U : zg
+]
+
+Rules: [
+  minus X zero => X ;
+  minus (s X) (s Y) => minus X Y ;
+  quot zero (s Y) => zero ;
+  quot (s X) (s Y) => s (quot (minus X Y) (s Y)) ;
+  le zero Y => true ;
+  le (s X) zero => false ;
+  le (s X) (s Y) => le X Y ;
+  app nil Y => Y ;
+  app (add Z X) Y => add Z (app X Y) ;
+  low Z nil => nil ;
+  low Z (add U X) => if6220low (le U Z) Z (add U X) ;
+  if6220low true Z (add U X) => add U (low Z X) ;
+  if6220low false Z (add U X) => low Z X ;
+  high Z nil => nil ;
+  high Z (add U X) => if6220high (le U Z) Z (add U X) ;
+  if6220high true Z (add U X) => high Z X ;
+  if6220high false Z (add U X) => add U (high Z X) ;
+  quicksort nil => nil ;
+  quicksort (add Z X) => app (quicksort (low Z X)) (add Z (quicksort (high Z X)))
+]

@@ -1,0 +1,17 @@
+Signature: [
+  zero : a ;
+  half : a -> a ;
+  log : a -> a ;
+  s : a -> a
+]
+
+Vars: [
+  X : a
+]
+
+Rules: [
+  half zero => zero ;
+  half (s (s X)) => s (half X) ;
+  log (s zero) => zero ;
+  log (s (s X)) => s (log (s (half X)))
+]

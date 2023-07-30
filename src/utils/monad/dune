@@ -1,0 +1,4 @@
+(library
+ (name monad)
+ (public_name hermes.monad)
+ (libraries ))

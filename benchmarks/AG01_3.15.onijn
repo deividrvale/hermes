@@ -1,0 +1,18 @@
+Signature: [
+  zero : o ;
+  average : o -> o -> o ;
+  s : o -> o
+]
+
+Vars: [
+  X : o;
+  Y : o
+]
+
+Rules: [
+  average (s X) Y => average X (s Y) ;
+  average X (s (s (s Y))) => s (average (s X) Y) ;
+  average zero zero => zero ;
+  average zero (s zero) => zero ;
+  average zero (s (s zero)) => s zero
+]

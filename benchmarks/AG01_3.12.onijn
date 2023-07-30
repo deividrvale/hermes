@@ -1,0 +1,23 @@
+
+Signature: [
+  add : q -> fb -> fb ;
+  app : fb -> fb -> fb ;
+  nil : fb ;
+  reverse : fb -> fb ;
+  shuffle : fb -> fb
+]
+
+Vars: [
+  X : fb;
+  Y : q;
+  Z : fb
+]
+
+Rules: [
+  app nil X => X ;
+  app (add Y Z) X => add Y (app Z X) ;
+  reverse nil => nil ;
+  reverse (add Y Z) => app (reverse Z) (add Y nil) ;
+  shuffle nil => nil ;
+  shuffle (add Y Z) => add Y (shuffle (reverse Z))
+]

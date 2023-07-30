@@ -1,0 +1,20 @@
+
+Signature: [
+  c : ua -> ua -> za ;
+  f : za -> ab ;
+  g : za -> ab ;
+  s : ua -> ua
+]
+
+Vars: [
+  X : ua;
+  Y : ua
+]
+
+Rules: [
+  f (c (s X) Y) => f (c X (s Y)) ;
+  f (c (s X) (s Y)) => g (c X Y) ;
+  g (c X (s Y)) => g (c (s X) Y) ;
+  g (c (s X) (s Y)) => f (c X Y)
+]
+

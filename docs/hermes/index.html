@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>index (hermes.index)</title><link rel="stylesheet" href="../odoc.support/odoc.css"/><meta charset="utf-8"/><meta name="generator" content="odoc 2.2.0"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><script src="../odoc.support/highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body class="odoc"><nav class="odoc-nav"><a href="../index.html">Up</a> – hermes</nav><header class="odoc-preamble"><h1 id="hermes---a-complexity-tool-for-first-order-rewriting"><a href="#hermes---a-complexity-tool-for-first-order-rewriting" class="anchor"></a>Hermes - A Complexity Tool for First-Order Rewriting</h1><p>Hermes is a termination and complexity analyzer for innermost first-order rewriting.</p><p>It currently, in v1.0.0, implements techniques from the paper <a href="https://doi.org/10.4204/EPTCS.376.5">https://doi.org/10.4204/EPTCS.376.5</a> which describes complexity analysis of such systems in the framework of tuple interpretations.</p></header><nav class="odoc-toc"><ul><li><a href="#input-file-format">Input File Format</a></li></ul></nav><div class="odoc-content"><h2 id="input-file-format"><a href="#input-file-format" class="anchor"></a>Input File Format</h2><p>The input TRS should follow a specific format. The following grammar describes the main tokens.</p><pre class="language-ocaml"><code>sort, fn, var := ['a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z' '0'-'9']
+type := sort | sort -&gt; type
+term := var | fn | term term
+rewrite_rule := term =&gt; term</code></pre><p>An input file format should describe the TRSs to be analyzed.</p><pre class="language-ocaml"><code>Signature: [
+    fn_0 : A_1 ;
+    ... ;
+    fn_k : A_K
+]
+
+Vars: [
+    v_1 : B_1 ;
+    ... ;
+    v_k : B_m ;
+]
+
+Rules: [
+    rule_1 ;
+    ... ;
+    rule_n
+]</code></pre><p>So, a signature is a list of type declarations. A TRS is a list of rules. As an example, we consider below the TRS implementing addition over the natural numbers.</p><pre class="language-ocaml"><code>Signature: [
+  zero : nat;
+  suc : nat -&gt; nat;
+  add : nat -&gt; nat -&gt; nat
+]
+
+Vars: [
+  x : nat;
+  y : nat
+]
+
+Rules: [
+  add x 0 =&gt; x;
+  add x (suc y) =&gt; suc (add x y)
+]</code></pre></div></body></html>

@@ -1,0 +1,60 @@
+{0 Hermes - A Complexity Tool for First-Order Rewriting}
+
+Hermes is a termination and complexity analyzer for innermost first-order rewriting.
+
+It currently, in v1.0.0, implements techniques from the paper
+{{: https://doi.org/10.4204/EPTCS.376.5} https://doi.org/10.4204/EPTCS.376.5}
+which describes complexity analysis of such systems in the framework of
+tuple interpretations.
+
+{1 Input File Format}
+
+The input TRS should follow a specific format.
+The following grammar describes the main tokens.
+{[
+sort, fn, var := ['a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z' '0'-'9']
+type := sort | sort -> type
+term := var | fn | term term
+rewrite_rule := term => term
+]}
+An input file format should describe the TRSs to be analyzed.
+{[
+Signature: [
+    fn_0 : A_1 ;
+    ... ;
+    fn_k : A_K
+]
+
+Vars: [
+    v_1 : B_1 ;
+    ... ;
+    v_k : B_m ;
+]
+
+Rules: [
+    rule_1 ;
+    ... ;
+    rule_n
+]
+]}
+
+So, a signature is a list of type declarations.
+A TRS is a list of rules.
+As an example, we consider below the TRS implementing addition over the natural numbers.
+{[
+Signature: [
+  zero : nat;
+  suc : nat -> nat;
+  add : nat -> nat -> nat
+]
+
+Vars: [
+  x : nat;
+  y : nat
+]
+
+Rules: [
+  add x 0 => x;
+  add x (suc y) => suc (add x y)
+]
+]}

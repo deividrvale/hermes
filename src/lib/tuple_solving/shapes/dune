@@ -1,0 +1,3 @@
+(library
+ (name shape)
+ (libraries config  poly syntax gener affine quadratic monad tuple))

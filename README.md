@@ -57,7 +57,7 @@ Hermes then is called using the name ``hermes`` in the command line.
 
 Hermes receives as input a file describing the term rewriting system to be analyzed.
 This version, v1.0.0, only accepts file in the ``onijn`` format.
-The file format is explained in the [API](https://deividrvale.github.io/nijn-coq-script-generation/onijn/index.html#input-file-format).
+The file format is explained in the [API](https://deividrvale.github.io/hermes/hermes/index.html).
 
 We assume Hermes' binaries are installed locally.
 Then simply run:
